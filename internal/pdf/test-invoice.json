@@ -1,0 +1,37 @@
+{
+  "id": "R190000247",
+  "created": "2019-09-17",
+  "due_date": "2019-09-27",
+  "period": "08/2019 - 08/2019",
+  "sum": 33700,
+  "sum_with_tax": 40404,
+  "payment_type": "SEPA-Lastschrift",
+  "customer": {
+    "id": "",
+    "name": "DDr. Elisabeth Zitzelsberger",
+    "street1": "Hauergasse 35",
+    "zip": 2410,
+    "city": "Hainburg an der Donau",
+    "country": "Österreich",
+    "uid": "",
+    "bic": "SPZWAT21XXX",
+    "iban": "AT68XXXXXXXXXXXX0979",
+    "mandate": "304111"
+  },
+  "items": [
+    {
+      "name": "intelliDoc",
+      "price": 3700,
+      "tax_rate": 20,
+      "tax": 740,
+      "price_with_tax": 4440
+    },
+    {
+      "name": "Netzwerk- und Infrastrukturservice",
+      "price": 30000,
+      "tax_rate": 20,
+      "tax": 6000,
+      "price_with_tax": 36000
+    }
+  ]
+}
