@@ -6,7 +6,7 @@ import (
 	"github.com/hodl-repos/pdf-invoice/internal/pdf/utils"
 )
 
-func TestCreatePdf2(t *testing.T) {
+func TestCreatePdf(t *testing.T) {
 	pdf := NewA4()
 
 	pdf.SetFooterFunc(utils.FooterFunc(pdf))

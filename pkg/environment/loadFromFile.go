@@ -9,7 +9,7 @@ import (
 
 func ImportFromFile(path string) error {
 	if _, err := os.Stat(path); os.IsNotExist(err) {
-		return errors.New("file does not exist")
+		return errors.New("file does not exist: " + path)
 	}
 
 	err := godotenv.Load(path)
