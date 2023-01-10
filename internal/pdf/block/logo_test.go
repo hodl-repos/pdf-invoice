@@ -18,7 +18,7 @@ func TestAddLogoBlockDefault(t *testing.T) {
 	}
 
 	AddLogoBlock(pdf, logo)
-	pdf.OutputFileAndClose("test/TestAddLogoBlockDefault.pdf")
+	pdfhelper.CreatePDFInRootOutFolder(pdf, "TestAddLogoBlockDefault.pdf")
 }
 
 func TestAddLogoBlockDefaultImage(t *testing.T) {
@@ -32,7 +32,7 @@ func TestAddLogoBlockDefaultImage(t *testing.T) {
 	}
 
 	AddLogoBlock(pdf, logo)
-	pdf.OutputFileAndClose("test/TestAddLogoBlockDefaultImage.pdf")
+	pdfhelper.CreatePDFInRootOutFolder(pdf, "TestAddLogoBlockDefaultImage.pdf")
 }
 
 func TestAddLogoBlockImagePath(t *testing.T) {
@@ -53,7 +53,7 @@ func TestAddLogoBlockImagePath(t *testing.T) {
 	}
 
 	AddLogoBlock(pdf, logo)
-	pdf.OutputFileAndClose("test/TestAddLogoBlockImagePath.pdf")
+	pdfhelper.CreatePDFInRootOutFolder(pdf, "TestAddLogoBlockImagePath.pdf")
 }
 
 func TestAddLogoBlockImageString(t *testing.T) {
@@ -70,5 +70,5 @@ func TestAddLogoBlockImageString(t *testing.T) {
 	}
 
 	AddLogoBlock(pdf, logo)
-	pdf.OutputFileAndClose("test/TestAddLogoBlockImageString.pdf")
+	pdfhelper.CreatePDFInRootOutFolder(pdf, "TestAddLogoBlockImageString.pdf")
 }

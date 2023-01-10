@@ -20,5 +20,8 @@ internal/pdf/**/*.pdf
 # Output of go build
 bin
 
+# Output folder for tests
+out
+
 # macos files
 .DS_Store
