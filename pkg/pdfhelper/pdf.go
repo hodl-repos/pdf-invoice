@@ -39,8 +39,8 @@ func NewA4() *gofpdf.Fpdf {
 	return pdf
 }
 
-func CreatePDFInRootOutFolder(pdf *gofpdf.Fpdf, fileName string) error {
-	srcPath, err := getSrcPathInToRootOutFolder(fileName)
+func CreatePDFInProjectRootOutFolder(pdf *gofpdf.Fpdf, fileName string) error {
+	srcPath, err := getSrcPathToProjectRootOutFolder(fileName)
 	if err != nil {
 		return fmt.Errorf("could not find out folder: %v", err)
 	}
@@ -68,7 +68,7 @@ func CreatePDFInRootOutFolder(pdf *gofpdf.Fpdf, fileName string) error {
 	return nil
 }
 
-func getSrcPathInToRootOutFolder(fileName string) (string, error) {
+func getSrcPathToProjectRootOutFolder(fileName string) (string, error) {
 	// Get the current working directory
 	currentDir, err := os.Getwd()
 	if err != nil {
@@ -76,28 +76,28 @@ func getSrcPathInToRootOutFolder(fileName string) (string, error) {
 	}
 
 	// Evaluate symbolic links
-	rootDir, err := filepath.EvalSymlinks(currentDir)
+	projectRootDir, err := filepath.EvalSymlinks(currentDir)
 	if err != nil {
 		return "", err
 	}
 
 	// Search up the directory tree until finding the root
 	for {
-		if _, err := os.Stat(filepath.Join(rootDir, "go.mod")); err == nil {
+		if _, err := os.Stat(filepath.Join(projectRootDir, "go.mod")); err == nil {
 			break
 		}
-		prev := rootDir
-		rootDir = filepath.Dir(rootDir)
-		if rootDir == prev {
+		prev := projectRootDir
+		projectRootDir = filepath.Dir(projectRootDir)
+		if projectRootDir == prev {
 			return "", fmt.Errorf("no go.mod file found")
 		}
 	}
 
 	// add out folder
-	rootDir = filepath.Join(rootDir, "out")
+	projectRootDir = filepath.Join(projectRootDir, "out")
 
 	// Get the relative path from the current working directory to the root folder
-	relPath, err := filepath.Rel(currentDir, rootDir)
+	relPath, err := filepath.Rel(currentDir, projectRootDir)
 	if err != nil {
 		return "", err
 	}
