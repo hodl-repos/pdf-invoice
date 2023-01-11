@@ -22,6 +22,8 @@ import (
 // FontSize: 8
 //
 // Margins: left: 10, top: 10, right: 10
+//
+// LineWidth: 0.2
 func NewA4() *gofpdf.Fpdf {
 	pdf := gofpdf.NewCustom(&gofpdf.InitType{
 		OrientationStr: "P",
@@ -32,6 +34,7 @@ func NewA4() *gofpdf.Fpdf {
 
 	pdf.SetFont("Arial", "", 8)
 	pdf.SetMargins(10, 10, 10)
+	pdf.SetLineWidth(0.2)
 	// pdf.SetAutoPageBreak(true, 10)
 
 	pdf.AddPage()
@@ -116,4 +119,12 @@ func getSrcPathToProjectRootOutFolder(fileName string) (string, error) {
 
 	//  You can use the srcPath here to do something with the PDF.
 	return srcPath, nil
+}
+
+// GetPrintWidth returns the current print width, which is the page width
+// subtracted by the left and right margin.
+func GetPrintWidth(pdf *gofpdf.Fpdf) float64 {
+	pageWidth, _ := pdf.GetPageSize()
+	marginL, _, marginR, _ := pdf.GetMargins()
+	return pageWidth - marginL - marginR
 }

@@ -12,12 +12,9 @@ import (
 )
 
 type Image struct {
-	// ImageName of the image
-	ImageName string `json:"image_name"`
-	// ImagePath is the location of the image on the filesystem
-	ImagePath string `json:"image_path,omitempty"`
-	// ImageString is the encoded string of the image
-	ImageString string `json:"image_string,omitempty"`
+	ImageName   string `json:"image_name"`             // ImageName of the image
+	ImagePath   string `json:"image_path,omitempty"`   // ImagePath is the location of the image on the filesystem
+	ImageString string `json:"image_string,omitempty"` // ImageString is the encoded string of the image
 }
 
 // FilePNGSize returns the width & height of a given png file from path.

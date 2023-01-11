@@ -9,19 +9,16 @@ import (
 
 // Logo struct represent a logo
 type Logo struct {
-	// Image of the logo
-	Image *pdfhelper.Image `json:"image,omitempty"`
-	// Width of the logo
-	Width float64 `json:"width,omitempty"`
-	// Height of the logo
-	Height float64 `json:"height,omitempty"`
+	Image  *pdfhelper.Image `json:"image,omitempty"`  // Image of the logo
+	Width  float64          `json:"width,omitempty"`  // Width of the logo
+	Height float64          `json:"height,omitempty"` // Height of the logo
 }
 
 // NewLogoFromJSON takes json data represented as []byte and returns a new Logo
 // struct if an error occurs while parsing the json, it will return the error.
-func NewLogoFromJSON(bytes []byte) (*Logo, error) {
+func NewLogoFromJSON(data []byte) (*Logo, error) {
 	var logo Logo
-	err := json.Unmarshal(bytes, &logo)
+	err := json.Unmarshal(data, &logo)
 	if err != nil {
 		return nil, err
 	}
