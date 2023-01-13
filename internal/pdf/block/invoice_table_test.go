@@ -7,14 +7,16 @@ import (
 )
 
 func TestAddInvoiceTableBlock(t *testing.T) {
-	pdf := pdfhelper.NewA4()
+	doc := pdfhelper.NewDocA4()
+
+	doc.SetLanguage("de")
 
 	data := []byte(`{
 		"sum_net": 100.0,
 		"sum_gross": 115.0,
 		"items": [
 			{
-					"name": "Item 1",
+					"name": "1 Sorglospaket (Anzug 3-teilig, 2 Maßhemden, Krawatte oder Fliege und Stecktuch)",
 					"net": 50.0,
 					"tax_rate": 0.15,
 					"tax": 7.5,
@@ -35,6 +37,6 @@ func TestAddInvoiceTableBlock(t *testing.T) {
 		t.Fatal("error creating new logo from json:", err)
 	}
 
-	AddInvoiceTableBlock(pdf, invoiceTable)
-	pdfhelper.CreatePDFInProjectRootOutFolder(pdf, "TestAddInvoiceTableBlock.pdf")
+	AddInvoiceTableBlock(doc, invoiceTable)
+	pdfhelper.CreatePDFInProjectRootOutFolder(doc.Fpdf, "TestAddInvoiceTableBlock.pdf")
 }

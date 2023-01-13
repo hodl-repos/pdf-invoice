@@ -23,6 +23,8 @@ import (
 //
 // Margins: left: 10, top: 10, right: 10
 //
+// Cell Margin: 0
+//
 // LineWidth: 0.2
 func NewA4() *gofpdf.Fpdf {
 	pdf := gofpdf.NewCustom(&gofpdf.InitType{
@@ -34,6 +36,7 @@ func NewA4() *gofpdf.Fpdf {
 
 	pdf.SetFont("Arial", "", 8)
 	pdf.SetMargins(10, 10, 10)
+	pdf.SetCellMargin(0)
 	pdf.SetLineWidth(0.2)
 	// pdf.SetAutoPageBreak(true, 10)
 

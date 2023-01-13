@@ -6,21 +6,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// var testdata = map[string]map[string]string{
-// 	"de": {
-// 		"AMOUNT_IN_EUR_EXCL_VAT": "Betrag in EUR zzgl. USt.",
-// 		"VAT":                    "USt.",
-// 		"AMOUNT_VAT":             "USt. Betrag",
-// 		"AMOUNT_IN_EUR_INCL_VAT": "Betrag in EUR inkl. USt.",
-// 	},
-// 	"en": {
-// 		"AMOUNT_IN_EUR_EXCL_VAT": "Amount in EUR excl. VAT",
-// 		"VAT":                    "VAT",
-// 		"AMOUNT_VAT":             "VAT Amount",
-// 		"AMOUNT_IN_EUR_INCL_VAT": "Amount in EUR incl. VAT",
-// 	},
-// }
-
 func TestLoadTranslation(t *testing.T) {
 	defer clearTranslations() // clear translations after test
 
