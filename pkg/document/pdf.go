@@ -88,11 +88,3 @@ func getSrcPathToProjectRootOutFolder(fileName string) (string, error) {
 	//  You can use the srcPath here to do something with the PDF.
 	return srcPath, nil
 }
-
-// GetPrintWidth returns the current print width, which is the page width
-// subtracted by the left and right margin.
-func GetPrintWidth(pdf *gofpdf.Fpdf) float64 {
-	pageWidth, _ := pdf.GetPageSize()
-	marginL, _, marginR, _ := pdf.GetMargins()
-	return pageWidth - marginL - marginR
-}

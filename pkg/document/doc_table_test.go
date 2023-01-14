@@ -235,7 +235,7 @@ func TestDocTableCellAlignsPerColumn(t *testing.T) {
 	}
 
 	colTypes := []ColumnType{ColDyn, ColCalc, ColCalc, ColCalc}
-	colAligns := []CellAlignment{AlignLeft, AlignRight, AlignRight, AlignRight}
+	colAligns := []Alignment{AlignLeft, AlignRight, AlignRight, AlignRight}
 
 	table, err := NewDocTable(doc, cells)
 	assert.NoError(t, err)

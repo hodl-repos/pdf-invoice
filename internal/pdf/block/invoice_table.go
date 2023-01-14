@@ -69,7 +69,7 @@ const (
 // table struct.
 func AddInvoiceTableBlock(doc *document.Doc, invoiceTable *InvoiceTable) {
 	lang := doc.GetLanguage()
-	document.DrawVerticalLinePrintWidth(doc.Fpdf)
+	doc.VerticalLinePrintWidth()
 	doc.Ln(2.5)
 
 	// table header ----------------
@@ -83,14 +83,14 @@ func AddInvoiceTableBlock(doc *document.Doc, invoiceTable *InvoiceTable) {
 	w3 := doc.GetStringWidth(h3) + columnGap
 	w4 := doc.GetStringWidth(h4) + columnGap
 	w5 := doc.GetStringWidth(h5) + columnGap
-	w1 := document.GetPrintWidth(doc.Fpdf) - w2 - w3 - w4 - w5
+	w1 := doc.GetPrintWidth() - w2 - w3 - w4 - w5
 
 	doc.CFormat(w1, headerHeight, "", b, 0, "L", false, 0, "")
 	doc.CFormat(w2, headerHeight, h2, b, 0, "R", false, 0, "")
 	doc.CFormat(w3, headerHeight, h3, b, 0, "R", false, 0, "")
 	doc.CFormat(w4, headerHeight, h4, b, 0, "R", false, 0, "")
 	doc.CFormat(w5, headerHeight, h5, b, 1, "R", false, 0, "")
-	document.DrawVerticalLinePrintWidth(doc.Fpdf)
+	doc.VerticalLinePrintWidth()
 	doc.Ln(1.5)
 
 	doc.SetFont("Arial", "", itemFontSize) // reset font

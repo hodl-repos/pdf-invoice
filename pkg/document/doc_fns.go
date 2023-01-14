@@ -18,3 +18,20 @@ func (d *Doc) MCell(w, h float64, txtStr, borderStr, alignStr string, fill bool)
 func (d *Doc) Ellipsis() string {
 	return "..."
 }
+
+// VerticalLine draws a vertical line on the current y position from x1 to x2
+// with a given thinkness.
+func (d *Doc) VerticalLine(x1, x2, thickness float64) {
+	d.SetLineWidth(thickness)
+
+	y := d.GetY()
+	d.Line(x1, y, x2, y)
+}
+
+// VerticalLinePrintWidth draws a vertical line inside the current print width
+// with a thickness of Fpdf.GetLineWidth().
+func (d *Doc) VerticalLinePrintWidth() {
+	ml, _, _, _ := d.GetMargins()
+	w := d.GetPrintWidth()
+	d.VerticalLine(ml, ml+w, d.GetLineWidth())
+}

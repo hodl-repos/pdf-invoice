@@ -44,6 +44,14 @@ func (d *Doc) GetLanguage() string {
 	return d.lang
 }
 
+// GetPrintWidth returns the current print width, which is the page width
+// subtracted by the left and right margin.
+func (d *Doc) GetPrintWidth() float64 {
+	pageWidth, _ := d.Fpdf.GetPageSize()
+	marginL, _, marginR, _ := d.Fpdf.GetMargins()
+	return pageWidth - marginL - marginR
+}
+
 func newA4() *gofpdf.Fpdf {
 	pdf := gofpdf.NewCustom(&gofpdf.InitType{
 		OrientationStr: "P",

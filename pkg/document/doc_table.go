@@ -19,49 +19,6 @@ const (
 	RowFixed
 )
 
-// CellAlignment determines how the content is aligned inside a cell.
-//
-// cell:
-// #----------------------------------------------#
-// | AlignTopLeft      AlignTop     AlignTopRight |
-// |                                              |
-// | AlignLeft	      AlignCenter	     AlignRight |
-// |                                              |
-// | AlignBottomLeft AlignBottom AlignBottomRight |
-// #----------------------------------------------#
-type CellAlignment int
-
-const (
-	AlignCenter CellAlignment = iota
-	AlignTop
-	AlignRight
-	AlignBottom
-	AlignLeft
-	AlignTopLeft
-	AlignTopRight
-	AlignBottomRight
-	AlignBottomLeft
-)
-
-// Padding is the padding inside of a cell. The indices follow the convention
-// Top(0), Right(1), Bottom(2), Left(3).
-//
-// #-- border -------------------------#
-// |            paddingTop             |
-// |             #------#              |
-// | paddingLeft | cell | paddingRight |
-// |             #------#              |
-// |          paddingBottom            |
-// #-----------------------------------#
-type Padding [4]float64
-
-const (
-	paddingTop = iota
-	paddingRight
-	paddingBottom
-	paddingLeft
-)
-
 // CellType determines how a cell will be rendered.
 type CellType int
 
@@ -192,7 +149,7 @@ type DocTable struct {
 	// |                                              |
 	// | AlignBottomLeft AlignBottom AlignBottomRight |
 	// #----------------------------------------------#
-	cellAligns [][]CellAlignment
+	cellAligns [][]Alignment
 	// cellPaddings determine the padding of every individual table cell.
 	//
 	// Padding is an additional space inside the cell around the content.
@@ -289,7 +246,7 @@ func (t *DocTable) Generate() error {
 	}
 	t.calcRowHeights()
 
-	printWidth := GetPrintWidth(t.doc.Fpdf)
+	printWidth := t.doc.GetPrintWidth()
 	if t.tableWidth > printWidth {
 		return fmt.Errorf("error generating table: table wider than print width: %v > %v", t.tableWidth, printWidth)
 	}
@@ -325,7 +282,7 @@ func (t *DocTable) validateColumns() error {
 
 func (t *DocTable) calcColWidths() {
 	t.colWidths = array(t.tableCols, .0)
-	printWidth := GetPrintWidth(t.doc.Fpdf)
+	printWidth := t.doc.GetPrintWidth()
 	tableWidth := 0.
 
 	dynCount := 0
@@ -603,10 +560,10 @@ func (t *DocTable) SetCellTypesPerColumn(ct []CellType) error {
 	return nil
 }
 
-func (t *DocTable) SetAllCellAligns(a CellAlignment) {
+func (t *DocTable) SetAllCellAligns(a Alignment) {
 	t.cellAligns = matrix(t.tableRows, t.tableCols, a)
 }
-func (t *DocTable) SetCellAlingsPerColumn(a []CellAlignment) error {
+func (t *DocTable) SetCellAlingsPerColumn(a []Alignment) error {
 	if len(a) != t.tableCols {
 		return fmt.Errorf("column count mismatch: got: %v should: %v", len(a), t.tableCols)
 	}
@@ -680,14 +637,14 @@ func array[T any](len int, val T) []T {
 	return arr
 }
 
-// alignToFpdf converts CellAlignments to the Fpdf equivalent(see below).
+// alignToFpdf converts Alignments to the Fpdf equivalent(see below).
 //
 // alignStr specifies how the text is to be positioned within the cell.
 // Horizontal alignment is controlled by including "L", "C" or "R" (left,
 // center, right) in alignStr. Vertical alignment is controlled by including
 // "T", "M", "B" or "A" (top, middle, bottom, baseline) in alignStr. The default
 // alignment is left middle.
-func alignToFpdf(a CellAlignment) string {
+func alignToFpdf(a Alignment) string {
 	switch a {
 	case AlignCenter:
 		return "MC"
