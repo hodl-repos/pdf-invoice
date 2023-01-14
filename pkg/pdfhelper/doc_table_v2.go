@@ -85,16 +85,15 @@ type DocTableV2 struct {
 	// Otherwise the value will be ignored.
 	colFixedWidths []float64
 	// colGaps are spaces between columns. Therefore there are only len(cols) - 1
-	// gaps per table. Every other gap will be ignored.
+	// gaps per table. Default is 0.
 	colGaps []float64
 	// colWidths will be calculated regarding all parameters and represent the
 	// current column widths.
 	colWidths []float64
 
-	// rowGap is the space between two rows. Default is 0.
-	rowGap float64
-	// rowHeight defines the height of the
-	rowHeight float64
+	// rowGaps are spaces between rows. Therefore there are only len(rows) - 1
+	// gaps per table. Default is 0.
+	rowGaps []float64
 
 	// cells hold the content of the table row by row. Each row holds the content
 	// of each cell per column.
@@ -152,7 +151,7 @@ func NewDocTableV2(doc *Doc, cells [][]string) (*DocTableV2, error) {
 	rowLen := len(cells[0])
 	for i, r := range cells {
 		if len(r) != rowLen {
-			return nil, fmt.Errorf("row %v has mismatching columns: got: %v should: %v", i, len(r), rowLen)
+			return nil, fmt.Errorf("row %v has mismatching columns: got: %v should: %v", i+1, len(r), rowLen)
 		}
 	}
 
@@ -176,11 +175,11 @@ func (t *DocTableV2) SetDefaults() {
 		t.colFixedWidths = array(cols, 0.)
 	}
 	if len(t.colGaps) == 0 {
-		t.colGaps = array(cols, 0.)
+		t.colGaps = array(cols-1, 0.)
 	}
-
-	t.rowGap = 0
-	t.rowHeight = 0
+	if len(t.rowGaps) == 0 {
+		t.rowGaps = array(rows-1, 0.)
+	}
 
 	if len(t.cellBorders) == 0 {
 		t.cellBorders = matrix(rows, cols, true)
@@ -269,13 +268,27 @@ func (t *DocTableV2) Generate() error {
 		return fmt.Errorf("error generating table: table wider than print width: %v > %v", t.tableWidth, printWidth)
 	}
 	for i := 0; i < t.tableRows; i++ {
+		t.addRowGap(i)
 		rowHt := t.getRowHeight(i)
 		for j := 0; j < t.tableCols; j++ {
+			t.addColGap(i, j)
 			t.renderCell(i, j, rowHt)
 		}
 	}
 
 	return nil
+}
+
+func (t *DocTableV2) addRowGap(i int) {
+	if i > 0 && t.rowGaps[i-1] > 0 {
+		t.doc.SetXY(t.doc.GetX(), t.doc.GetY()+t.rowGaps[i-1])
+	}
+}
+
+func (t *DocTableV2) addColGap(i, j int) {
+	if j > 0 && t.colGaps[j-1] != 0. {
+		t.doc.SetX(t.doc.GetX() + t.colGaps[j-1])
+	}
 }
 
 func (t *DocTableV2) renderCell(i, j int, rowHt float64) {
@@ -363,7 +376,7 @@ func (t *DocTableV2) SetAllColTypes(ct ColumnType) {
 
 func (t *DocTableV2) SetColTypes(colTypes []ColumnType) error {
 	if len(colTypes) != t.tableCols {
-		return fmt.Errorf("column count mismatch: parameterCols: %v tableCols: %v", len(colTypes), t.tableCols)
+		return fmt.Errorf("column count mismatch: got: %v should: %v", len(colTypes), t.tableCols)
 	}
 	t.colTypes = colTypes
 	return nil
@@ -375,9 +388,33 @@ func (t *DocTableV2) SetAllColFixedWidths(w float64) {
 
 func (t *DocTableV2) SetColFixedWidths(cFixedWidth []float64) error {
 	if len(cFixedWidth) != t.tableCols {
-		return fmt.Errorf("column count mismatch: parameterCols: %v tableCols: %v", len(cFixedWidth), t.tableCols)
+		return fmt.Errorf("column count mismatch: got: %v should: %v", len(cFixedWidth), t.tableCols)
 	}
 	t.colFixedWidths = cFixedWidth
+	return nil
+}
+
+func (t *DocTableV2) SetAllColGaps(g float64) {
+	t.colGaps = array(t.tableCols-1, g)
+}
+
+func (t *DocTableV2) SetColGaps(g []float64) error {
+	if len(g) != t.tableCols-1 {
+		return fmt.Errorf("column count mismatch: got: %v should: %v", len(g), t.tableCols-1)
+	}
+	t.colGaps = g
+	return nil
+}
+
+func (t *DocTableV2) SetAllRowGaps(g float64) {
+	t.rowGaps = array(t.tableRows-1, g)
+}
+
+func (t *DocTableV2) SetRowGaps(g []float64) error {
+	if len(g) != t.tableRows-1 {
+		return fmt.Errorf("row count mismatch: got: %v should: %v", len(g), t.tableRows-1)
+	}
+	t.rowGaps = g
 	return nil
 }
 
@@ -399,6 +436,19 @@ func (t *DocTableV2) SetCellPaddings(p [][]Padding) error {
 
 func (t *DocTableV2) SetAllCellAligns(a CellAlignment) {
 	t.cellAligns = matrix(t.tableRows, t.tableCols, a)
+}
+
+func (t *DocTableV2) SetCellAlingsPerColumn(a []CellAlignment) error {
+	if len(a) != t.tableCols {
+		return fmt.Errorf("column count mismatch: got: %v should: %v", len(a), t.tableCols)
+	}
+
+	for j := 0; j < t.tableCols; j++ {
+		for i := 0; i < t.tableRows; i++ {
+			t.cellAligns[i][j] = a[j]
+		}
+	}
+	return nil
 }
 
 func (t *DocTableV2) SetAllCellTypes(ct CellType) {
