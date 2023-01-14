@@ -75,18 +75,43 @@ const (
 // NOTE: All used indices follow the convention that indices i are for rows and
 // indices j are for columns.
 //
-// Render process: 1-3 user actions
-// 1) NewDocTable
+// Render process: 1-3 are user actions
+//
+// 1. NewDocTable(doc *Doc, cells [][]string)
+//
 //   - setting row and column count
+//
 //   - setting default values
 //
-// 2) (optional) change table parameters
-// 3) Generate
+// 2. (optional) change table parameters
+//
+// 3. table.Generate()
+//
 //   - validate columns
+//
 //   - calculate columns
+//
 //   - validate rows
+//
 //   - calculate rows
+//
 //   - render cells
+//
+// Table parameters & defaults:
+//   - colTypes: ColDyn
+//   - colFixedWidths: 0.0
+//   - colGaps: 0.0
+//   - colWidths: calculated
+//   - rowTypes: RowCalc
+//   - rowFixedHeights: 0.0
+//   - rowGaps: 0.0
+//   - rowHeights: calculated
+//   - cells: constructor parameter
+//   - cellTypes: CellSingle
+//   - cellLineHeightFactors: 1.2
+//   - cellAligns: AlignLeft
+//   - cellPaddings: Padding{0,0,0,0}
+//   - cellBorder: true
 type DocTable struct {
 	doc *Doc
 
