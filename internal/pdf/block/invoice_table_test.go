@@ -3,11 +3,11 @@ package block
 import (
 	"testing"
 
-	"github.com/hodl-repos/pdf-invoice/pkg/pdfhelper"
+	"github.com/hodl-repos/pdf-invoice/pkg/document"
 )
 
 func TestAddInvoiceTableBlock(t *testing.T) {
-	doc := pdfhelper.NewDocA4()
+	doc := document.NewA4()
 
 	doc.SetLanguage("de")
 
@@ -38,5 +38,5 @@ func TestAddInvoiceTableBlock(t *testing.T) {
 	}
 
 	AddInvoiceTableBlock(doc, invoiceTable)
-	pdfhelper.CreatePDFInProjectRootOutFolder(doc.Fpdf, "TestAddInvoiceTableBlock.pdf")
+	document.CreatePDFInProjectRootOutFolder(doc.Fpdf, "TestAddInvoiceTableBlock.pdf")
 }

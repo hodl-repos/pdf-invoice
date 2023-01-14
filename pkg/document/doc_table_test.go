@@ -1,4 +1,4 @@
-package pdfhelper
+package document
 
 import (
 	"testing"
@@ -7,7 +7,7 @@ import (
 )
 
 func TestDocTableCellsError(t *testing.T) {
-	doc := NewDocA4()
+	doc := NewA4()
 
 	// first row is smaller
 	cells := [][]string{
@@ -35,7 +35,7 @@ func TestDocTableCellsError(t *testing.T) {
 }
 
 func TestDocTableDynamicCols(t *testing.T) {
-	doc := NewDocA4()
+	doc := NewA4()
 
 	cells := [][]string{
 		{"A", "B", "C", "D"},
@@ -55,7 +55,7 @@ func TestDocTableDynamicCols(t *testing.T) {
 }
 
 func TestDocTableFixedCols(t *testing.T) {
-	doc := NewDocA4()
+	doc := NewA4()
 
 	cells := [][]string{
 		{"A", "B", "C", "D"},
@@ -77,7 +77,7 @@ func TestDocTableFixedCols(t *testing.T) {
 }
 
 func TestDocTableCalculatedCols(t *testing.T) {
-	doc := NewDocA4()
+	doc := NewA4()
 
 	cells := [][]string{
 		{"A", "B", "C", "D"},
@@ -98,7 +98,7 @@ func TestDocTableCalculatedCols(t *testing.T) {
 }
 
 func TestDocTableCalculatedAndDynamicCols(t *testing.T) {
-	doc := NewDocA4()
+	doc := NewA4()
 
 	cells := [][]string{
 		{"First column", "Second column", "Thirld column", "Forth column"},
@@ -127,7 +127,7 @@ func TestDocTableCalculatedAndDynamicCols(t *testing.T) {
 }
 
 func TestDocTableEllipsis(t *testing.T) {
-	doc := NewDocA4()
+	doc := NewA4()
 
 	cells := [][]string{
 		{"Christian Faustmann", "Christian Faustmann", "Christian Faustmann", "Christian Faustmann", "Christian Faustmann"},
@@ -146,7 +146,7 @@ func TestDocTableEllipsis(t *testing.T) {
 }
 
 func TestDocTablePadding(t *testing.T) {
-	doc := NewDocA4()
+	doc := NewA4()
 
 	cells := [][]string{
 		{"######", "######", "######"},
@@ -180,7 +180,7 @@ func TestDocTablePadding(t *testing.T) {
 }
 
 func TestDocTableCelPaddingsPerColumn(t *testing.T) {
-	doc := NewDocA4()
+	doc := NewA4()
 
 	cells := [][]string{
 		{
@@ -222,7 +222,7 @@ func TestDocTableCelPaddingsPerColumn(t *testing.T) {
 }
 
 func TestDocTableCellAlignsPerColumn(t *testing.T) {
-	doc := NewDocA4()
+	doc := NewA4()
 
 	cells := [][]string{
 		{"First column", "Second column", "Thirld column", "Forth column"},
@@ -257,7 +257,7 @@ func TestDocTableCellAlignsPerColumn(t *testing.T) {
 }
 
 func TestDocTableSetColGaps(t *testing.T) {
-	doc := NewDocA4()
+	doc := NewA4()
 
 	cells := [][]string{
 		{"A", "B", "C", "D"},
@@ -285,7 +285,7 @@ func TestDocTableSetColGaps(t *testing.T) {
 }
 
 func TestDocTableSetAllRowGaps(t *testing.T) {
-	doc := NewDocA4()
+	doc := NewA4()
 
 	cells := [][]string{
 		{"A", "B", "C", "D"},
@@ -310,7 +310,7 @@ func TestDocTableSetAllRowGaps(t *testing.T) {
 }
 
 func TestDocTableSetRowGaps(t *testing.T) {
-	doc := NewDocA4()
+	doc := NewA4()
 
 	cells := [][]string{
 		{"A", "B", "C", "D"},
@@ -338,7 +338,7 @@ func TestDocTableSetRowGaps(t *testing.T) {
 }
 
 func TestDocTableRowAndColGap(t *testing.T) {
-	doc := NewDocA4()
+	doc := NewA4()
 
 	cells := [][]string{
 		{"A", "B", "C", "D"},
@@ -368,7 +368,7 @@ func TestDocTableRowAndColGap(t *testing.T) {
 }
 
 func TestDocTableCellMulti(t *testing.T) {
-	doc := NewDocA4()
+	doc := NewA4()
 
 	cells := [][]string{{
 		"Polaroid gastropub stumptown microdosing vegan fanny pack. Ugh prism quinoa keytar organic hexagon before they sold out poutine taiyaki whatever four dollar toast photo booth small batch.",
@@ -391,7 +391,7 @@ func TestDocTableCellMulti(t *testing.T) {
 }
 
 func TestDocTableValidateColumns(t *testing.T) {
-	doc := NewDocA4()
+	doc := NewA4()
 
 	cells := [][]string{
 		{"A", "B", "C", "D"},
@@ -419,7 +419,7 @@ func TestDocTableValidateColumns(t *testing.T) {
 }
 
 func TestDocTableValidateRows(t *testing.T) {
-	doc := NewDocA4()
+	doc := NewA4()
 
 	cells := matrix(8, 8, "")
 
@@ -441,7 +441,7 @@ func TestDocTableValidateRows(t *testing.T) {
 }
 
 func TestDocTableRowFixed(t *testing.T) {
-	doc := NewDocA4()
+	doc := NewA4()
 
 	cells := matrix(8, 8, "")
 
@@ -460,7 +460,7 @@ func TestDocTableRowFixed(t *testing.T) {
 }
 
 func TestDocTableCheckIndices(t *testing.T) {
-	doc := NewDocA4()
+	doc := NewA4()
 
 	cells := matrix(8, 7, "")
 
@@ -484,7 +484,7 @@ func TestDocTableCheckIndices(t *testing.T) {
 }
 
 func TestAlignToFpdf(t *testing.T) {
-	doc := NewDocA4()
+	doc := NewA4()
 
 	w := 30.
 	h := 20.

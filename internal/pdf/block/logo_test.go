@@ -4,11 +4,11 @@ import (
 	"os"
 	"testing"
 
-	"github.com/hodl-repos/pdf-invoice/pkg/pdfhelper"
+	"github.com/hodl-repos/pdf-invoice/pkg/document"
 )
 
 func TestAddLogoBlockDefault(t *testing.T) {
-	pdf := pdfhelper.NewA4()
+	doc := document.NewA4()
 
 	data := []byte(`{ "image": null, "width": 0, "height": 0 }`)
 
@@ -17,12 +17,12 @@ func TestAddLogoBlockDefault(t *testing.T) {
 		t.Fatal("error creating new logo from json:", err)
 	}
 
-	AddLogoBlock(pdf, logo)
-	pdfhelper.CreatePDFInProjectRootOutFolder(pdf, "TestAddLogoBlockDefault.pdf")
+	AddLogoBlock(doc.Fpdf, logo)
+	document.CreatePDFInProjectRootOutFolder(doc.Fpdf, "TestAddLogoBlockDefault.pdf")
 }
 
 func TestAddLogoBlockDefaultImage(t *testing.T) {
-	pdf := pdfhelper.NewA4()
+	doc := document.NewA4()
 
 	data := []byte(`{ "image": null, "width": 45, "height": 0 }`)
 
@@ -31,12 +31,12 @@ func TestAddLogoBlockDefaultImage(t *testing.T) {
 		t.Fatal("error creating new logo from json:", err)
 	}
 
-	AddLogoBlock(pdf, logo)
-	pdfhelper.CreatePDFInProjectRootOutFolder(pdf, "TestAddLogoBlockDefaultImage.pdf")
+	AddLogoBlock(doc.Fpdf, logo)
+	document.CreatePDFInProjectRootOutFolder(doc.Fpdf, "TestAddLogoBlockDefaultImage.pdf")
 }
 
 func TestAddLogoBlockImagePath(t *testing.T) {
-	pdf := pdfhelper.NewA4()
+	doc := document.NewA4()
 
 	data := []byte(`{ 
 		"image": { 
@@ -52,12 +52,12 @@ func TestAddLogoBlockImagePath(t *testing.T) {
 		t.Fatal("error creating new logo from json:", err)
 	}
 
-	AddLogoBlock(pdf, logo)
-	pdfhelper.CreatePDFInProjectRootOutFolder(pdf, "TestAddLogoBlockImagePath.pdf")
+	AddLogoBlock(doc.Fpdf, logo)
+	document.CreatePDFInProjectRootOutFolder(doc.Fpdf, "TestAddLogoBlockImagePath.pdf")
 }
 
 func TestAddLogoBlockImageString(t *testing.T) {
-	pdf := pdfhelper.NewA4()
+	doc := document.NewA4()
 
 	data, err := os.ReadFile("test/TestAddLogoBlockImageString.json")
 	if err != nil {
@@ -69,6 +69,6 @@ func TestAddLogoBlockImageString(t *testing.T) {
 		t.Fatal("error creating new logo from json:", err)
 	}
 
-	AddLogoBlock(pdf, logo)
-	pdfhelper.CreatePDFInProjectRootOutFolder(pdf, "TestAddLogoBlockImageString.pdf")
+	AddLogoBlock(doc.Fpdf, logo)
+	document.CreatePDFInProjectRootOutFolder(doc.Fpdf, "TestAddLogoBlockImageString.pdf")
 }

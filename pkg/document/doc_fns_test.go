@@ -1,9 +1,9 @@
-package pdfhelper
+package document
 
 import "testing"
 
 func TestMCell(t *testing.T) {
-	doc := NewDocA4()
+	doc := NewA4()
 
 	doc.SetX(100)
 	x, y := doc.GetXY()

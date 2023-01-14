@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/hodl-repos/pdf-invoice/pkg/pdfhelper"
+	"github.com/hodl-repos/pdf-invoice/pkg/document"
 )
 
 func init() {
@@ -23,7 +23,7 @@ func init() {
 		},
 	}
 
-	err := pdfhelper.LoadTranslation(translations)
+	err := document.LoadTranslation(translations)
 	if err != nil {
 		panic(err)
 	}
@@ -67,30 +67,30 @@ const (
 
 // AddInvoiceTableBlock  create a table in pdf using information from an invoice
 // table struct.
-func AddInvoiceTableBlock(doc *pdfhelper.Doc, invoiceTable *InvoiceTable) {
-	lang := doc.Lang
-	pdfhelper.DrawVerticalLinePrintWidth(doc.Fpdf)
+func AddInvoiceTableBlock(doc *document.Doc, invoiceTable *InvoiceTable) {
+	lang := doc.GetLanguage()
+	document.DrawVerticalLinePrintWidth(doc.Fpdf)
 	doc.Ln(2.5)
 
 	// table header ----------------
 	doc.SetFont("Arial", "B", headerFontSize)
-	h2 := pdfhelper.T("AMOUNT_IN_EUR_EXCL_VAT", lang)
-	h3 := pdfhelper.T("VAT", lang)
-	h4 := pdfhelper.T("AMOUNT_VAT", lang)
-	h5 := pdfhelper.T("AMOUNT_IN_EUR_INCL_VAT", lang)
+	h2 := document.T("AMOUNT_IN_EUR_EXCL_VAT", lang)
+	h3 := document.T("VAT", lang)
+	h4 := document.T("AMOUNT_VAT", lang)
+	h5 := document.T("AMOUNT_IN_EUR_INCL_VAT", lang)
 
 	w2 := doc.GetStringWidth(h2)
 	w3 := doc.GetStringWidth(h3) + columnGap
 	w4 := doc.GetStringWidth(h4) + columnGap
 	w5 := doc.GetStringWidth(h5) + columnGap
-	w1 := pdfhelper.GetPrintWidth(doc.Fpdf) - w2 - w3 - w4 - w5
+	w1 := document.GetPrintWidth(doc.Fpdf) - w2 - w3 - w4 - w5
 
 	doc.CFormat(w1, headerHeight, "", b, 0, "L", false, 0, "")
 	doc.CFormat(w2, headerHeight, h2, b, 0, "R", false, 0, "")
 	doc.CFormat(w3, headerHeight, h3, b, 0, "R", false, 0, "")
 	doc.CFormat(w4, headerHeight, h4, b, 0, "R", false, 0, "")
 	doc.CFormat(w5, headerHeight, h5, b, 1, "R", false, 0, "")
-	pdfhelper.DrawVerticalLinePrintWidth(doc.Fpdf)
+	document.DrawVerticalLinePrintWidth(doc.Fpdf)
 	doc.Ln(1.5)
 
 	doc.SetFont("Arial", "", itemFontSize) // reset font
@@ -133,7 +133,7 @@ func AddInvoiceTableBlock(doc *pdfhelper.Doc, invoiceTable *InvoiceTable) {
 
 func tableRow(row []string, cols []float64)
 
-func tableCell(doc *pdfhelper.Doc, w float64, txtStr, borderStr, alignStr string) float64 {
+func tableCell(doc *document.Doc, w float64, txtStr, borderStr, alignStr string) float64 {
 	lines := doc.SplitText(txtStr, w)
 	_, fontHt := doc.GetFontSize()
 	lineHt := fontHt * lineHeightFactor

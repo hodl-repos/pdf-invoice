@@ -1,4 +1,4 @@
-package pdfhelper
+package document
 
 import "github.com/jung-kurt/gofpdf"
 

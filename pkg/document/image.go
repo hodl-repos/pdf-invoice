@@ -1,4 +1,4 @@
-package pdfhelper
+package document
 
 import (
 	"bytes"

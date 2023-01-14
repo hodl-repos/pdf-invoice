@@ -1,4 +1,4 @@
-package pdfhelper
+package document
 
 // CFormat wraps CellFormat and transforms the given txtStr in a UTF-8
 // UnicodeTranslator to render special characters such as german Umlaute
