@@ -179,6 +179,48 @@ func TestDocTableV2Padding(t *testing.T) {
 	CreatePDFInProjectRootOutFolder(doc.Fpdf, "TestDocTableV2Padding.pdf")
 }
 
+func TestDocTableV2CelPaddingsPerColumn(t *testing.T) {
+	doc := NewDocA4()
+
+	cells := [][]string{
+		{
+			"Polaroid gastropub stumptown microdosing vegan fanny pack. Ugh prism quinoa keytar organic hexagon before they sold out poutine taiyaki whatever four dollar toast photo booth small batch.",
+			"Vice humblebrag edison bulb cloud bread heirloom yes plz direct trade ennui lo-fi cronut fingerstache knausgaard pickled pabst small batch.",
+			"Brooklyn ascot listicle pitchfork edison bulb pok pok disrupt single-origin coffee wayfarers banh mi pabst plaid.",
+			"Cronut kogi pour-over retro affogato, scenester occupy godard. Schlitz taxidermy umami bushwick occupy kitsch. Irony retro wolf hot chicken +1 thundercats microdosing pour-over truffaut butcher air plant organic crucifix.",
+		},
+		{
+			"Brooklyn ascot listicle pitchfork edison bulb pok pok disrupt single-origin coffee wayfarers banh mi pabst plaid.",
+			"Polaroid gastropub stumptown microdosing vegan fanny pack. Ugh prism quinoa keytar organic hexagon before they sold out poutine taiyaki whatever four dollar toast photo booth small batch.",
+			"Vice humblebrag edison bulb cloud bread heirloom yes plz direct trade ennui lo-fi cronut fingerstache knausgaard pickled pabst small batch.",
+			"Cronut kogi pour-over retro affogato, scenester occupy godard. Schlitz taxidermy umami bushwick occupy kitsch. Irony retro wolf hot chicken +1 thundercats microdosing pour-over truffaut butcher air plant organic crucifix.",
+		},
+		{
+			"Cronut kogi pour-over retro affogato, scenester occupy godard. Schlitz taxidermy umami bushwick occupy kitsch. Irony retro wolf hot chicken +1 thundercats microdosing pour-over truffaut butcher air plant organic crucifix.",
+			"Polaroid gastropub stumptown microdosing vegan fanny pack. Ugh prism quinoa keytar organic hexagon before they sold out poutine taiyaki whatever four dollar toast photo booth small batch.",
+			"Brooklyn ascot listicle pitchfork edison bulb pok pok disrupt single-origin coffee wayfarers banh mi pabst plaid.",
+			"Vice humblebrag edison bulb cloud bread heirloom yes plz direct trade ennui lo-fi cronut fingerstache knausgaard pickled pabst small batch.",
+		},
+	}
+
+	paddings := []Padding{{1, 1, 1, 1}, {1, 1, 1, 1}, {1, 1, 1, 5}, {1, 1, 1, 1}}
+
+	table, err := NewDocTableV2(doc, cells)
+	assert.NoError(t, err)
+
+	table.SetAllCellTypes(CellMulti)
+
+	err = table.SetCellPaddingsPerColumn(paddings[1:])
+	assert.EqualError(t, err, "column count mismatch: got: 3 should: 4")
+	err = table.SetCellPaddingsPerColumn(paddings)
+	assert.NoError(t, err)
+
+	err = table.Generate()
+	assert.NoError(t, err)
+
+	CreatePDFInProjectRootOutFolder(doc.Fpdf, "TestDocTableV2CelPaddingsPerColumn.pdf")
+}
+
 func TestDocTableV2CellAlignsPerColumn(t *testing.T) {
 	doc := NewDocA4()
 
@@ -323,6 +365,119 @@ func TestDocTableV2RowAndColGap(t *testing.T) {
 	assert.NoError(t, err)
 
 	CreatePDFInProjectRootOutFolder(doc.Fpdf, "TestDocTableV2ColAndRowGap.pdf")
+}
+
+func TestDocTableV2CellMulti(t *testing.T) {
+	doc := NewDocA4()
+
+	cells := [][]string{{
+		"Polaroid gastropub stumptown microdosing vegan fanny pack. Ugh prism quinoa keytar organic hexagon before they sold out poutine taiyaki whatever four dollar toast photo booth small batch.",
+		"Vice humblebrag edison bulb cloud bread heirloom yes plz direct trade ennui lo-fi cronut fingerstache knausgaard pickled pabst small batch.",
+		"Brooklyn ascot listicle pitchfork edison bulb pok pok disrupt single-origin coffee wayfarers banh mi pabst plaid.",
+		"Cronut kogi pour-over retro affogato, scenester occupy godard. Schlitz taxidermy umami bushwick occupy kitsch. Irony retro wolf hot chicken +1 thundercats microdosing pour-over truffaut butcher air plant organic crucifix.",
+	},
+	}
+
+	table, err := NewDocTableV2(doc, cells)
+	assert.NoError(t, err)
+
+	err = table.Generate()
+	assert.NoError(t, err)
+
+	CreatePDFInProjectRootOutFolder(doc.Fpdf, "TestDocTableV2CellMulti.pdf")
+}
+
+func TestDocTableV2ValidateColumns(t *testing.T) {
+	doc := NewDocA4()
+
+	cells := [][]string{
+		{"A", "B", "C", "D"},
+		{"E", "F", "G", "H"},
+		{"I", "J", "K", "L"},
+		{"M", "N", "O", "P"},
+		{"Q", "R", "S", "T"},
+		{"X", "Y", "Z", ""},
+	}
+
+	colTypes := []ColumnType{ColCalc, ColDyn, ColDyn, ColDyn}
+	cellTypes := []CellType{CellMulti, CellSingle, CellSingle, CellSingle}
+
+	table, err := NewDocTableV2(doc, cells)
+	assert.NoError(t, err)
+
+	err = table.SetColTypes(colTypes)
+	assert.NoError(t, err)
+
+	err = table.SetCellTypesPerColumn(cellTypes)
+	assert.NoError(t, err)
+
+	err = table.Generate()
+	assert.EqualError(t, err, "column 1 of type ColCalc has only CellMulti cells and cannot be calculated")
+}
+
+func TestDocTableV2ValidateRows(t *testing.T) {
+	doc := NewDocA4()
+
+	cells := matrix(8, 8, "")
+
+	table, err := NewDocTableV2(doc, cells)
+	assert.NoError(t, err)
+
+	err = table.SetCell(2, 2, "Banjo tumeric letterpress plaid echo park la croix iceland gastropub dreamcatcher.")
+	assert.NoError(t, err)
+	err = table.SetCellType(2, 2, CellMulti)
+	assert.NoError(t, err)
+
+	table.SetAllColTypes(ColFixed)
+	table.SetAllColFixedWidths(15)
+	table.SetAllRowTypes(RowFixed)
+	table.SetAllRowFixedHeights(15)
+
+	err = table.Generate()
+	assert.EqualError(t, err, "row 3 cannot display all cells; insufficient height")
+}
+
+func TestDocTableV2RowFixed(t *testing.T) {
+	doc := NewDocA4()
+
+	cells := matrix(8, 8, "")
+
+	table, err := NewDocTableV2(doc, cells)
+	assert.NoError(t, err)
+
+	table.SetAllColTypes(ColFixed)
+	table.SetAllColFixedWidths(15)
+	table.SetAllRowTypes(RowFixed)
+	table.SetAllRowFixedHeights(15)
+
+	err = table.Generate()
+	assert.NoError(t, err)
+
+	CreatePDFInProjectRootOutFolder(doc.Fpdf, "TestDocTableV2RowFixed.pdf")
+}
+
+func TestDocTableV2CheckIndices(t *testing.T) {
+	doc := NewDocA4()
+
+	cells := matrix(8, 7, "")
+
+	table, err := NewDocTableV2(doc, cells)
+	assert.NoError(t, err)
+
+	err = table.SetCell(-1, 0, "")
+	assert.EqualError(t, err, "invalid row index: got: -1 should: 0-7")
+	err = table.SetCell(8, 0, "")
+	assert.EqualError(t, err, "invalid row index: got: 8 should: 0-7")
+
+	err = table.SetCell(0, -1, "")
+	assert.EqualError(t, err, "invalid column index: got: -1 should: 0-6")
+	err = table.SetCell(0, 7, "")
+	assert.EqualError(t, err, "invalid column index: got: 7 should: 0-6")
+
+	err = table.SetCell(0, 0, "")
+	assert.NoError(t, err)
+	err = table.SetCell(7, 6, "")
+	assert.NoError(t, err)
 }
 
 func TestAlignToFpdf(t *testing.T) {
