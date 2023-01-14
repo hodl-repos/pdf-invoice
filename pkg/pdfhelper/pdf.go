@@ -45,6 +45,7 @@ func NewA4() *gofpdf.Fpdf {
 	return pdf
 }
 
+// TODO: add functionality to generate example files from tests.
 func CreatePDFInProjectRootOutFolder(pdf *gofpdf.Fpdf, fileName string) error {
 	srcPath, err := getSrcPathToProjectRootOutFolder(fileName)
 	if err != nil {
