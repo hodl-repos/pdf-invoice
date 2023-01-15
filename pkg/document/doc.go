@@ -4,8 +4,13 @@ import "github.com/jung-kurt/gofpdf"
 
 type Doc struct {
 	*gofpdf.Fpdf
-	lang   string
-	trUTF8 func(string) string
+	lang string
+	// lineHeight determines the height of one line of text given the current
+	// font size. lineHeight is in percent where 1 = 100%. Percent is used so it
+	// is independent of the used unit (pt, mm, in, etc.). The height of one line
+	// of text is calculated by fontSize (in units) * lineHeight. Default is 1.2.
+	lineHeight float64
+	trUTF8     func(string) string
 }
 
 const (
@@ -26,6 +31,8 @@ const (
 //
 // fontSize: 8
 //
+// lineHeight: 1.2
+//
 // document margins: left: 10, top: 10, right: 10
 //
 // line width: 0.2
@@ -33,6 +40,7 @@ func NewA4() *Doc {
 	doc := &Doc{}
 	doc.Fpdf = newA4()
 	doc.lang = DOC_LANG_DEFAULT
+	doc.lineHeight = 1.2
 	doc.trUTF8 = doc.UnicodeTranslatorFromDescriptor("")
 	return doc
 }
@@ -42,6 +50,16 @@ func (d *Doc) SetLanguage(lang string) {
 }
 func (d *Doc) GetLanguage() string {
 	return d.lang
+}
+
+// SetLineHeight sets the line height. Values 0 and lower will be disgarded.
+func (d *Doc) SetLineHeight(lh float64) {
+	if lh > 0 {
+		d.lineHeight = lh
+	}
+}
+func (d *Doc) GetLineHeight() float64 {
+	return d.lineHeight
 }
 
 // GetPrintWidth returns the current print width, which is the page width

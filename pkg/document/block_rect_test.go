@@ -164,3 +164,17 @@ func TestRectBorder(t *testing.T) {
 
 	CreatePDFInProjectRootOutFolder(doc.Fpdf, "RectBorder.pdf")
 }
+
+func TestRectSlot(t *testing.T) {
+	doc := NewA4()
+
+	r := NewRect(doc, 25, 15)
+	txt := NewText(doc, "TEST")
+
+	r.SetSlot(txt)
+
+	err := r.Render()
+	assert.NoError(t, err)
+
+	CreatePDFInProjectRootOutFolder(doc.Fpdf, "RectSlot.pdf")
+}
