@@ -58,7 +58,7 @@ func TestRectFill(t *testing.T) {
 	a := doc.GetPrintWidth() / 255
 
 	rect := NewRect(doc, a, a)
-	rect.SetFill(true)
+	rect.SetFill(Fill)
 	rect.SetBorder(BorderNone)
 
 	len := 255
@@ -80,7 +80,7 @@ func TestRectBorder(t *testing.T) {
 
 	r := NewRect(doc, 10, 10)
 	r.doc.SetFillColor(230, 230, 230)
-	r.SetFill(true)
+	r.SetFill(Fill)
 	r.doc.SetLineWidth(0.5)
 
 	// default
@@ -168,8 +168,8 @@ func TestRectBorder(t *testing.T) {
 func TestRectSlot(t *testing.T) {
 	doc := NewA4()
 
-	r := NewRect(doc, 25, 15)
-	txt := NewText(doc, "TEST")
+	r := NewRect(doc, 25, 15, VAlignMiddle, Padding{1, 1, 1, 1})
+	txt := NewText(doc, "TEST with a little bit more text")
 
 	r.SetSlot(txt)
 

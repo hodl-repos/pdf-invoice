@@ -6,33 +6,21 @@ type Text struct {
 	str  string
 }
 
-// TODO: use args with:
-// func checkTypes(args ...interface{}) {
-// 	for _, arg := range args {
-// 		fmt.Println(reflect.TypeOf(arg))
-// 	}
-// }
-//
-// checkTypes(FlowBlock, AlignBottom, ColFixed)
-//
-// output:
-// document.FlowType
-// document.Alignment
-// document.ColumnType
-
+// TODO: use args with
 func NewText(doc *Doc, str string, args ...interface{}) *Text {
 	return &Text{doc, FlowBlock, str}
 }
 
-func (r *Text) GetWidth() float64 {
-	return r.doc.GetPrintWidth()
+func (txt *Text) GetWidth() float64 {
+	return txt.doc.GetStringWidth(txt.str)
 }
 
-func (r *Text) GetHeight() float64 {
-	return r.doc.GetLineHeight()
+func (txt *Text) GetHeight() float64 {
+	lines := txt.doc.SplitText(txt.str, txt.doc.GetPrintWidth())
+	return float64(len(lines)) * txt.doc.GetFontLineHeight()
 }
 
-func (r *Text) Render() error {
-	r.doc.MCell(r.doc.GetPrintWidth(), r.doc.GetLineHeight(), r.str, "", "", false)
+func (txt *Text) Render() error {
+	txt.doc.MCell(txt.doc.GetPrintWidth(), txt.doc.GetFontLineHeight(), txt.str, "C", "", false)
 	return nil
 }

@@ -149,7 +149,7 @@ type DocTable struct {
 	// |                                              |
 	// | AlignBottomLeft AlignBottom AlignBottomRight |
 	// #----------------------------------------------#
-	cellAligns [][]Alignment
+	cellAligns [][]AlignmentType
 	// cellPaddings determine the padding of every individual table cell.
 	//
 	// Padding is an additional space inside the cell around the content.
@@ -560,10 +560,10 @@ func (t *DocTable) SetCellTypesPerColumn(ct []CellType) error {
 	return nil
 }
 
-func (t *DocTable) SetAllCellAligns(a Alignment) {
+func (t *DocTable) SetAllCellAligns(a AlignmentType) {
 	t.cellAligns = matrix(t.tableRows, t.tableCols, a)
 }
-func (t *DocTable) SetCellAlingsPerColumn(a []Alignment) error {
+func (t *DocTable) SetCellAlingsPerColumn(a []AlignmentType) error {
 	if len(a) != t.tableCols {
 		return fmt.Errorf("column count mismatch: got: %v should: %v", len(a), t.tableCols)
 	}
@@ -644,7 +644,7 @@ func array[T any](len int, val T) []T {
 // center, right) in alignStr. Vertical alignment is controlled by including
 // "T", "M", "B" or "A" (top, middle, bottom, baseline) in alignStr. The default
 // alignment is left middle.
-func alignToFpdf(a Alignment) string {
+func alignToFpdf(a AlignmentType) string {
 	switch a {
 	case AlignCenter:
 		return "MC"

@@ -61,6 +61,10 @@ func (d *Doc) SetLineHeight(lh float64) {
 func (d *Doc) GetLineHeight() float64 {
 	return d.lineHeight
 }
+func (d *Doc) GetFontLineHeight() float64 {
+	_, fontHt := d.GetFontSize()
+	return fontHt * d.lineHeight
+}
 
 // GetPrintWidth returns the current print width, which is the page width
 // subtracted by the left and right margin.

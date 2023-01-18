@@ -1,6 +1,37 @@
 package document
 
-// Alignment determines how the content is aligned inside a cell.
+// BoxType determines if content has to fit inside the box or it will be
+// continued on another box on the same or subsequent page.
+//
+// # BoxUnset (default) - BoxType is not set
+//
+// BoxOpen - content will be continued when it does not fit the box entirely.
+//
+// BoxClosed - content has to fit the box, otherwise this should lead to an
+// error.
+type BoxType int
+
+const (
+	BoxUnset BoxType = iota
+	BoxOpen
+	BoxClosed
+)
+
+// PositionType determines how an element gets positioned.
+//
+// PositionAbsolute - place an element at the coordinates x, y on the current
+// page.
+//
+// PositionsRelative - place an element at the current cursor position.
+type PositionType int
+
+const (
+	PositionUnset PositionType = iota
+	PositionAbsolute
+	PositionRelative
+)
+
+// AlignmentType determines how the content is aligned inside a cell.
 //
 // cell:
 // #----------------------------------------------#
@@ -21,10 +52,10 @@ package document
 //   - AlignTopRight
 //   - AlignBottomRight
 //   - AlignBottomLeft
-type Alignment int
+type AlignmentType int
 
 const (
-	AlignCenter Alignment = iota
+	AlignCenter AlignmentType = iota
 	AlignTop
 	AlignRight
 	AlignBottom
@@ -33,6 +64,40 @@ const (
 	AlignTopRight
 	AlignBottomRight
 	AlignBottomLeft
+)
+
+// VAlignmentType determines how content is aligned vertically in a cell:
+//
+// #------------------#
+// |    VAlignTop     |
+// |                  |
+// |   VAlignMiddle	  |
+// |                  |
+// |   VAlignBottom   |
+// #------------------#
+type VAlignmentType int
+
+const (
+	VAlignUnset VAlignmentType = iota
+	VAlignTop
+	VAlignMiddle
+	VAlignBottom
+)
+
+// HAlignmentType determines how content is aligned horizontally in a cell:
+//
+// #-----------------------------------------#
+// |                                         |
+// | HAlignLeft	  HAlignCenter	 HAlignRight |
+// |                                         |
+// #-----------------------------------------#
+type HAlignmentType int
+
+const (
+	HAlignUnset HAlignmentType = iota
+	HAlignLeft
+	HAlignCenter
+	HAlignRight
 )
 
 // BorderType determines how a border will be rendered.
@@ -58,7 +123,8 @@ const (
 type BorderType int
 
 const (
-	BorderNone BorderType = iota
+	BorderUnset BorderType = iota
+	BorderNone
 	BorderOutside
 	BorderInside // e.g. table
 	BorderTop
@@ -75,6 +141,32 @@ const (
 	BorderOpenRight  // BorderBottom + BorderLeft + BorderTop
 	BorderOpenBottom // BorderLeft + BorderTop + BorderRight
 	BorderOpenLeft   // BorderTop + BorderRight + BorderBottom
+)
+
+type FillType int
+
+const (
+	FillUnset FillType = iota
+	FillNone
+	Fill
+	FillGradientLinear
+	FillGradientRadial
+)
+
+// FlowType determines where the cursor will positioned after generate.
+//
+// FlowInline - cursor on the same height after the element.
+//
+// FlowBlock - cursor under and at the beginning of the element.
+//
+// FlowNewline - cursor under the element and at the left margin
+type FlowType int
+
+const (
+	FlowUnset FlowType = iota
+	FlowInline
+	FlowBlock
+	FlowNewline
 )
 
 // Padding is the padding inside of a cell. The indices follow the convention
@@ -94,19 +186,4 @@ const (
 	paddingRight
 	paddingBottom
 	paddingLeft
-)
-
-// FlowType determines where the cursor will positioned after generate.
-//
-// FlowInline - cursor on the same height after the element.
-//
-// FlowBlock - cursor under and at the beginning of the element.
-//
-// FlowNewline - cursor under the element and at the left margin
-type FlowType int
-
-const (
-	FlowInline FlowType = iota
-	FlowBlock
-	FlowNewline
 )

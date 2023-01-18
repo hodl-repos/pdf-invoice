@@ -1,18 +1,20 @@
 package document
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type Rect struct {
-	doc    *Doc
-	flow   FlowType
-	w      float64
-	h      float64
-	border BorderType
-	fill   bool
-	slot   Block
+	doc        *Doc
+	w          float64
+	h          float64
+	flow       FlowType
+	padding    Padding
+	border     BorderType
+	fill       FillType
+	slot       Block
+	vAlignment VAlignmentType
 }
-
-// TODO: Add RoundedRect
 
 // NewRect creates a Rect block.
 //
@@ -23,21 +25,51 @@ type Rect struct {
 //   - border: BorderOutline
 //   - fill: false
 //   - slot: nil
-func NewRect(doc *Doc, w, h float64) *Rect {
+func NewRect(doc *Doc, w, h float64, args ...interface{}) *Rect {
 	r := &Rect{
 		doc: doc,
 		w:   w,
 		h:   h,
 	}
+
+	// fmt.Println(r.padding)
+
+	for _, a := range args {
+		switch param := a.(type) {
+		case FlowType:
+			r.flow = param
+		case Padding:
+			r.padding = param
+		case BorderType:
+			if param == BorderInside {
+				break
+			}
+			r.border = param
+		case FillType:
+			r.fill = param
+		case VAlignmentType:
+			r.vAlignment = param
+		}
+	}
+
 	r.setDefaults()
 	return r
 }
 
 func (r *Rect) setDefaults() {
-	r.flow = FlowInline
-	r.border = BorderOutside
-	r.fill = false
-	r.slot = nil
+	if r.flow == FlowUnset {
+		r.flow = FlowInline
+	}
+	if r.border == BorderUnset {
+		r.border = BorderOutside
+	}
+	if r.fill == FillUnset {
+		r.fill = FillNone
+	}
+
+	if r.vAlignment == VAlignUnset {
+		r.vAlignment = VAlignTop
+	}
 }
 
 // BLOCK INTERFACE
@@ -55,7 +87,7 @@ func (r *Rect) Render() error {
 	if b == BorderInside {
 		return fmt.Errorf("invalid border type BorderInside for rect")
 	}
-	if b == BorderNone && !r.fill {
+	if b == BorderNone && r.fill == FillNone {
 		return fmt.Errorf("nothing to render of rect")
 	}
 	x1, y1 := r.doc.GetXY()
@@ -63,7 +95,7 @@ func (r *Rect) Render() error {
 	// lineW := r.doc.GetLineWidth()
 	// halfLineW := lineW / 2.
 
-	if r.fill {
+	if r.fill == Fill {
 		r.doc.Rect(x1, y1, r.w, r.h, "F")
 	}
 
@@ -117,10 +149,30 @@ func (r *Rect) Render() error {
 		}
 	}
 
-	// ml, mt, mr, mb := r.doc.GetMargins()
-
 	if r.slot != nil {
-		// r.doc.SetMargins(x1, y1, )
+		ml, mt, mr, _ := r.doc.GetMargins()
+		pageWidth, _ := r.doc.GetPageSize()
+		x, y := r.doc.GetXY()
+		p := r.padding
+		r.doc.SetMargins(x+p[paddingLeft], y+p[paddingTop], pageWidth-x-r.w+p[paddingRight])
+		defer r.doc.SetMargins(ml, mt, mr)
+
+		bHeight := r.slot.GetHeight()
+		if bHeight > r.h {
+			return fmt.Errorf("error rendering slot: slot is heigher that rect")
+		}
+
+		switch r.vAlignment {
+		case VAlignTop:
+			break
+		case VAlignMiddle:
+			dy := (r.h-bHeight-p[paddingTop]-p[paddingBottom])/2 + p[paddingTop]
+			r.doc.SetXY(r.doc.GetX()+p[paddingLeft], r.doc.GetY()+dy)
+		case VAlignBottom:
+			dy := r.h - bHeight - p[paddingBottom]
+			r.doc.SetXY(r.doc.GetX()+p[paddingLeft], r.doc.GetY()+dy)
+		}
+
 		err := r.slot.Render()
 		if err != nil {
 			return err
@@ -149,8 +201,8 @@ func (r *Rect) SetBorder(b BorderType) {
 	r.border = b
 }
 
-func (r *Rect) SetFill(b bool) {
-	r.fill = b
+func (r *Rect) SetFill(f FillType) {
+	r.fill = f
 }
 
 func (r *Rect) SetSlot(b Block) {
