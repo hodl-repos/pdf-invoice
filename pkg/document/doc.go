@@ -11,6 +11,7 @@ type Doc struct {
 	// of text is calculated by fontSize (in units) * lineHeight. Default is 1.2.
 	lineHeight float64
 	trUTF8     func(string) string
+	debug      bool
 }
 
 const (
@@ -42,6 +43,7 @@ func NewA4() *Doc {
 	doc.lang = DOC_LANG_DEFAULT
 	doc.lineHeight = 1.2
 	doc.trUTF8 = doc.UnicodeTranslatorFromDescriptor("")
+	doc.debug = false
 	return doc
 }
 
@@ -64,6 +66,14 @@ func (d *Doc) GetLineHeight() float64 {
 func (d *Doc) GetFontLineHeight() float64 {
 	_, fontHt := d.GetFontSize()
 	return fontHt * d.lineHeight
+}
+
+// SetDebug sets the debug flag for the whole document.
+func (d *Doc) SetDebug(b bool) {
+	d.debug = b
+}
+func (d *Doc) Debug() bool {
+	return d.debug
 }
 
 // GetPrintWidth returns the current print width, which is the page width
