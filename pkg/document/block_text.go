@@ -6,7 +6,6 @@ type Text struct {
 	str  string
 }
 
-// TODO: use args with
 func NewText(doc *Doc, str string, args ...interface{}) *Text {
 	return &Text{doc, FlowBlock, str}
 }

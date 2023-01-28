@@ -1,5 +1,23 @@
 package document
 
+type OrientationType int
+
+const (
+	OrientationUnset OrientationType = iota
+	OrientationPortrait
+	OrientationLandscape
+)
+
+type UnitType int
+
+const (
+	UnitUnset UnitType = iota
+	UnitMillimeter
+	UnitPoint
+	UnitCentimeter
+	UnitInch
+)
+
 // BoxType determines if content has to fit inside the box or it will be
 // continued on another box on the same or subsequent page.
 //
