@@ -371,8 +371,8 @@ func TestDocTableCellMulti(t *testing.T) {
 	doc := NewA4()
 
 	cells := [][]string{{
-		"Polaroid gastropub stumptown microdosing vegan fanny pack. Ugh prism quinoa keytar organic hexagon before they sold out poutine taiyaki whatever four dollar toast photo booth small batch.",
-		"Vice humblebrag edison bulb cloud bread heirloom yes plz direct trade ennui lo-fi cronut fingerstache knausgaard pickled pabst small batch.",
+		"Polaroid gastropub stumptown microdosing vegan fanny pa\n\n\nck. Ugh prism quinoa keytar organic hexagon before they sold out poutine taiyaki whatever four dollar toast photo booth small batch.",
+		"Vice humbleb\nrag edison bulb cloud bread\n\n\n heirloom yes plz direct trade ennui lo-fi cronut fingerstache knausgaard pickled pabst small batch.",
 		"Brooklyn ascot listicle pitchfork edison bulb pok pok disrupt single-origin coffee wayfarers banh mi pabst plaid.",
 		"Cronut kogi pour-over retro affogato, scenester occupy godard. Schlitz taxidermy umami bushwick occupy kitsch. Irony retro wolf hot chicken +1 thundercats microdosing pour-over truffaut butcher air plant organic crucifix.",
 	},

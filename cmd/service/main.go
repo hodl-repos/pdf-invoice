@@ -6,8 +6,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/hodl-repos/pdf-invoice/internal/qr"
-	"github.com/hodl-repos/pdf-invoice/internal/qr/config"
+	"github.com/hodl-repos/pdf-invoice/internal/service"
 	"github.com/hodl-repos/pdf-invoice/internal/setup"
 	"github.com/hodl-repos/pdf-invoice/pkg/environment"
 	"github.com/hodl-repos/pdf-invoice/pkg/httpServer"
@@ -49,16 +48,16 @@ func realMain(ctx context.Context) error {
 
 	logger.Infow("server listening")
 
-	var cfg config.Config
+	var cfg service.Config
 	env, err := setup.Setup(ctx, &cfg)
 	if err != nil {
 		return fmt.Errorf("setup.Setup: %w", err)
 	}
 	defer env.Close(ctx)
 
-	qrServer, err := qr.NewServer(ctx, &cfg, env)
+	server, err := service.NewServer(ctx, &cfg, env)
 	if err != nil {
-		return fmt.Errorf("qr.NewServer: %w", err)
+		return fmt.Errorf("service.NewServer: %w", err)
 	}
 
 	srv, err := httpServer.New(cfg.Port)
@@ -68,5 +67,5 @@ func realMain(ctx context.Context) error {
 
 	logger.Infow("server listening", "port", cfg.Port)
 
-	return srv.ServeHTTPWithHandler(ctx, qrServer.Routes(ctx))
+	return srv.ServeHTTPWithHandler(ctx, server.Routes(ctx))
 }
