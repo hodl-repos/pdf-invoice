@@ -6,8 +6,7 @@ type DocumentStyleDto struct {
 	LocaleCode   *string `json:"localeCode" validate:"required"`
 	LanguageCode *string `json:"languageCode" validate:"required"`
 
-	Layout   *document.LayoutType   `json:"layout" validate:"required"`
-	PageSize *document.PageSizeType `json:"pageSize" validate:"required"`
+	Layout *document.LayoutType `json:"layout" validate:"required"`
 
 	//only possible when A4-Portrait
 	ShowMarkerPuncher *bool `json:"showMarkerPuncher"`

@@ -51,6 +51,20 @@ func createDIN5008ABlock(data *dto.DocumentDto, pdf *document.Doc) {
 	//TODO: limit to 27.3 max-height
 	pdf.MCell(80, pdf.GetFontLineHeight() /* 27.3 */, prepareAddressString(data.InvoiceAddress), "", "LT", false)
 
+	lOld, _, rOld, _ := pdf.GetMargins()
+
+	pdf.SetLeftMargin(125)
+	pdf.SetRightMargin(10)
+	pdf.SetXY(125, 32)
+	table, _ := document.NewDocTable(pdf, prepareInformationCells(data.InvoiceInformation))
+	table.SetAllCellPaddings(document.Padding{1, 1, 1, 1})
+	table.SetAllCellBorders(false)
+
+	table.Generate()
+
+	pdf.SetLeftMargin(lOld)
+	pdf.SetRightMargin(rOld)
+
 	//set to content position
 	pdf.SetXY(25, 98.5)
 }
@@ -60,6 +74,20 @@ func createDIN5008BBlock(data *dto.DocumentDto, pdf *document.Doc) {
 
 	//TODO: limit to 27.3 max-height
 	pdf.MCell(80, pdf.GetFontLineHeight() /* 27.3 */, prepareAddressString(data.InvoiceAddress), "", "LT", false)
+
+	lOld, _, rOld, _ := pdf.GetMargins()
+
+	pdf.SetLeftMargin(125)
+	pdf.SetRightMargin(10)
+	pdf.SetXY(125, 50)
+	table, _ := document.NewDocTable(pdf, prepareInformationCells(data.InvoiceInformation))
+	table.SetAllCellPaddings(document.Padding{1, 1, 1, 1})
+	table.SetAllCellBorders(false)
+
+	table.Generate()
+
+	pdf.SetLeftMargin(lOld)
+	pdf.SetRightMargin(rOld)
 
 	//set to content position
 	pdf.SetXY(25, 98.5)

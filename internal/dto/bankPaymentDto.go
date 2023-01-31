@@ -5,4 +5,7 @@ type BankPaymentDto struct {
 	BankName      *string `json:"bankName" validate:"required"`
 	IBAN          *string `json:"iban" validate:"required"`
 	BIC           *string `json:"bic,omitempty"`
+
+	PaymentReference      *string `json:"paymentReference,omitempty"`
+	RemittanceInformation *string `json:"remittanceInformation,omitempty"`
 }

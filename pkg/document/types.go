@@ -1,5 +1,12 @@
 package document
 
+type LayoutType string
+
+const (
+	LayoutTypeDIN5008A LayoutType = "DIN_5008A"
+	LayoutTypeDIN5008B LayoutType = "DIN_5008B"
+)
+
 type OrientationType int
 
 const (

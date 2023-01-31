@@ -184,6 +184,12 @@ func NewDocTable(doc *Doc, cells [][]string) (*DocTable, error) {
 		}
 	}
 
+	for _, r := range cells {
+		for i := range r {
+			r[i] = doc.trUTF8(r[i])
+		}
+	}
+
 	t := &DocTable{
 		doc:   doc,
 		cells: cells,

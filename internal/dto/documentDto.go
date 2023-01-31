@@ -5,6 +5,8 @@ type DocumentDto struct {
 
 	InvoiceAddress *AddressDto `json:"invoiceAddress" validate:"required"`
 
+	InvoiceInformation *InvoiceInformationDto `json:"invoiceInformation" validate:"required"`
+
 	//can be null - no specific customer to be written on the invoice
 	CustomerAddress *AddressDto `json:"customerAddress"`
 

@@ -34,3 +34,57 @@ func prepareAddressString(data *dto.AddressDto) string {
 
 	return tmp
 }
+
+func ap(table *[][]string, header, content string) {
+	columns := make([]string, 2)
+	columns[0] = header
+	columns[1] = content
+	*table = append(*table, columns)
+}
+
+// prepared invoice-rows with 2 colums
+func prepareInformationCells(data *dto.InvoiceInformationDto) [][]string {
+	//name is required
+	tmp := make([][]string, 0)
+
+	if data.InvoiceNumber != nil {
+		ap(&tmp, "Invoice-Number", *data.InvoiceNumber)
+		ap(&tmp, "Invoice-Date", data.InvoiceDate.Format("2006-01-02"))
+	} else if data.OfferNumber != nil {
+		ap(&tmp, "Offer-Number", *data.OfferNumber)
+		ap(&tmp, "Offer-Date", data.OfferDate.Format("2006-01-02"))
+	}
+
+	ap(&tmp, "Due-Date", data.DueDate.Format("2006-01-02"))
+
+	if data.AdditionalInformation != nil {
+		for _, additional := range *data.AdditionalInformation {
+			ap(&tmp, *additional.Title, *additional.Value)
+		}
+	}
+
+	return tmp
+}
+
+func prepareBankText(data *dto.BankPaymentDto) string {
+	// name is required
+	tmp := *data.AccountHolder + "\n" + *data.BankName
+
+	if data.IBAN != nil {
+		tmp = tmp + fmt.Sprintf("\nIBAN: %s", *data.IBAN)
+	}
+
+	if data.BIC != nil {
+		tmp = tmp + fmt.Sprintf("\nBIC: %s", *data.BIC)
+	}
+
+	if data.PaymentReference != nil {
+		tmp = tmp + fmt.Sprintf("\nPayment-Reference: %s", *data.PaymentReference)
+	}
+
+	if data.RemittanceInformation != nil {
+		tmp = tmp + fmt.Sprintf("\nTransaction-Text: %s", *data.RemittanceInformation)
+	}
+
+	return tmp
+}

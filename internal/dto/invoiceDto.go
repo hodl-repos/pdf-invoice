@@ -1,11 +1,10 @@
 package dto
 
 type InvoiceDto struct {
-	ShowNetColumn           *bool `json:"showNetColumn"`
-	ShowGrossColumn         *bool `json:"showGrossColumn"`
-	ShowTaxPercentageColumn *bool `json:"showTaxPercentageColumn"`
-	ShowTaxColumn           *bool `json:"showTaxColumn"`
-	ShowAmountColumn        *bool `json:"showAmountColumn"`
+	ShowNetColumn    *bool `json:"showNetColumn"`
+	ShowGrossColumn  *bool `json:"showGrossColumn"`
+	ShowTaxColumn    *bool `json:"showTaxColumn"`
+	ShowAmountColumn *bool `json:"showAmountColumn"`
 
 	ShowNetSum   *bool `json:"showNetSum"`
 	ShowTaxSum   *bool `json:"showTaxSum"`
