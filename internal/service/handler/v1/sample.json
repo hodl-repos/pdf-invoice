@@ -3,7 +3,6 @@
     "localeCode": "de",
     "languageCode": "de",
     "layout": "DIN_5008B",
-    "pageSize": "A4_Portrait",
     "showMarkerPuncher": true,
     "showMarkerFolding": true,
     "showBankPaymentQrCode": true
@@ -16,6 +15,11 @@
     "city": "Wien",
     "country": "Austria"
   },
+  "invoiceInformation": {
+    "invoiceNumber": "12-30392",
+    "invoiceDate": "2022-12-23T15:04:05Z",
+    "dueDate": "2022-12-28T15:04:05Z"
+  },
   "customerAddress": {
     "name": "Auftraggeber Mauracher",
     "street1": "Straße 2",
@@ -27,7 +31,6 @@
   "invoiceData": {
     "showNetColumn": true,
     "showGrossColumn": true,
-    "showTaxPercentageColumn": true,
     "showTaxColumn": true,
     "showAmountColumn": true,
     "showNetSum": true,
@@ -53,6 +56,7 @@
   "bankPaymentData": {
     "accountHolder": "Rotnkopf OG",
     "bankName": "VOLKSBANK",
-    "iban": "AT123456789023"
+    "iban": "AT123456789023",
+    "bic": "RZTIAT3364"
   }
 }
