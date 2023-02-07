@@ -19,7 +19,7 @@ func NewA4() *gofpdf.Fpdf {
 
 func NewA6Landscape() *gofpdf.Fpdf {
 	pdf := gofpdf.NewCustom(&gofpdf.InitType{
-		OrientationStr: "P",
+		OrientationStr: "L",
 		UnitStr:        "mm",
 		SizeStr:        "A6", //should fail because not present, dont forget sizetype
 		Size: gofpdf.SizeType{
