@@ -39,7 +39,36 @@ const (
 // line width: 0.2
 func NewA4() *Doc {
 	doc := &Doc{}
-	doc.Fpdf = newA4()
+	doc.Fpdf = newA4(nil)
+	doc.lang = DOC_LANG_DEFAULT
+	doc.lineHeight = 1.2
+	doc.trUTF8 = doc.UnicodeTranslatorFromDescriptor("")
+	doc.debug = false
+	return doc
+}
+
+// NewA4 creates a new pdf in DIN A4 format with one page added.
+//
+// Orientation: portrait
+//
+// lang: en
+//
+// unit: mm
+//
+// size: A4
+//
+// font: Arial
+//
+// fontSize: 8
+//
+// lineHeight: 1.2
+//
+// document margins: left: 10, top: 10, right: 10
+//
+// line width: 0.2
+func NewA4WithDefaults(setDetaultsFunc *func(*gofpdf.Fpdf)) *Doc {
+	doc := &Doc{}
+	doc.Fpdf = newA4(setDetaultsFunc)
 	doc.lang = DOC_LANG_DEFAULT
 	doc.lineHeight = 1.2
 	doc.trUTF8 = doc.UnicodeTranslatorFromDescriptor("")
@@ -84,7 +113,7 @@ func (d *Doc) GetPrintWidth() float64 {
 	return pageWidth - marginL - marginR
 }
 
-func newA4() *gofpdf.Fpdf {
+func newA4(setDetaultsFunc *func(*gofpdf.Fpdf)) *gofpdf.Fpdf {
 	pdf := gofpdf.NewCustom(&gofpdf.InitType{
 		OrientationStr: "P",
 		UnitStr:        "mm",
@@ -92,11 +121,16 @@ func newA4() *gofpdf.Fpdf {
 		FontDirStr:     "",
 	})
 
-	pdf.SetFont("Arial", "", 8)
-	pdf.SetMargins(10, 10, 10)
-	pdf.SetCellMargin(0)
-	pdf.SetLineWidth(0.2)
-	// pdf.SetAutoPageBreak(true, 10)
+	if setDetaultsFunc == nil {
+		pdf.SetFont("Arial", "", 8)
+		pdf.SetMargins(10, 10, 10)
+		pdf.SetCellMargin(0)
+		pdf.SetLineWidth(0.2)
+		// pdf.SetAutoPageBreak(true, 10)
+	} else {
+		f := *setDetaultsFunc
+		f(pdf)
+	}
 
 	pdf.AddPage()
 
