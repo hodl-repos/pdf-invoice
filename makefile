@@ -9,6 +9,9 @@ req-sample-invoice:
 build:
 	@CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o=./bin/ ./cmd/...
 
+loadtest:
+	@k6 run ./k6/test.js --vus 50 --duration 30s
+
 test:
 	@go test \
 		-count=1 \
