@@ -25,12 +25,7 @@ func generateBankBlock(data *dto.DocumentDto, pdf *document.Doc) error {
 	totalTextHeight := float64(len(lines)) * pdf.GetFontLineHeight()
 	totalBlockHeight := totalTextHeight + 10 //add 10, 5 top and 5 bottom margin
 
-	_, t, _, b := pdf.GetMargins()
-	_, h := pdf.GetPageSize()
-	totalPagePrintableArea := h - t - b
-	remainingSpace := totalPagePrintableArea - pdf.GetY()
-
-	if totalBlockHeight > remainingSpace {
+	if totalBlockHeight > pdf.GetRemainingPrintHeight() {
 		pdf.AddPage()
 	}
 

@@ -257,7 +257,20 @@ func (t *DocTable) Generate() error {
 		return fmt.Errorf("error generating table: table wider than print width: %v > %v", t.tableWidth, printWidth)
 	}
 	for i := 0; i < t.tableRows; i++ {
-		t.addRowGap(i)
+		t.addRowGap(i) //adds only gap between rows - page break is not affected by gap as there is already a gap
+
+		//check for nedt page
+		nextRowHeight := t.rowHeights[i]
+		if nextRowHeight > t.doc.GetRemainingPrintHeight() {
+			t.doc.AddPage()
+
+			//print first row again
+			for j := 0; j < t.tableCols; j++ {
+				t.addColGap(0, j)
+				t.renderCell(0, j)
+			}
+		}
+
 		for j := 0; j < t.tableCols; j++ {
 			t.addColGap(i, j)
 			t.renderCell(i, j)
@@ -416,6 +429,9 @@ func (t *DocTable) addColGap(i, j int) {
 }
 
 func (t *DocTable) renderCell(i, j int) {
+	//check for page break
+
+	//draw
 	doc := t.doc
 	x, y := doc.GetXY()
 	p := t.cellPaddings[i][j]

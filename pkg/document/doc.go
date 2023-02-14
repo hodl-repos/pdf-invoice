@@ -113,6 +113,23 @@ func (d *Doc) GetPrintWidth() float64 {
 	return pageWidth - marginL - marginR
 }
 
+// GetRemainingPrintHeight returns the remaining print height, which is the page height
+// subtracted by the bottom margin and the current cursor-position, can be negative.
+func (d *Doc) GetRemainingPrintHeight() float64 {
+	_, pageHeight := d.Fpdf.GetPageSize()
+	_, _, _, marginB := d.Fpdf.GetMargins()
+
+	return pageHeight - marginB - d.Fpdf.GetY()
+}
+
+// GetPrintHeight returns the current print height, which is the page height
+// subtracted by the top and bottom margin.
+func (d *Doc) GetPrintHeight() float64 {
+	_, pageHeight := d.Fpdf.GetPageSize()
+	_, marginT, _, marginB := d.Fpdf.GetMargins()
+	return pageHeight - marginT - marginB
+}
+
 func newA4(setDetaultsFunc *func(*gofpdf.Fpdf)) *gofpdf.Fpdf {
 	pdf := gofpdf.NewCustom(&gofpdf.InitType{
 		OrientationStr: "P",
