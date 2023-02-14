@@ -16,13 +16,14 @@ import (
 func main() {
 	ctx, done := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 
-	logger := logging.NewLoggerFromEnv()
-	ctx = logging.ContextWithLogger(ctx, logger)
-
 	err := environment.ImportFromFile(".env")
 	if err != nil {
-		logger.Fatalw("environment error", err)
+		fmt.Println("environment error", err)
+		panic(err)
 	}
+
+	logger := logging.NewLoggerFromEnv()
+	ctx = logging.ContextWithLogger(ctx, logger)
 
 	// recover from panics
 	defer func() {
