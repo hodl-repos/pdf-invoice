@@ -16,9 +16,9 @@ func Handler() apihelper.HandlerFuncWithError {
 
 		logger.Debugln("got request for v1-generate")
 
+		//#region unmarshal
 		logger.Debugln("deserializing dto")
 
-		//#region unmarshal
 		var request dto.DocumentDto
 
 		err := apihelper.UnmarshalJsonAndValidateWithError(w, r, &request)
@@ -26,9 +26,9 @@ func Handler() apihelper.HandlerFuncWithError {
 			return err
 		}
 
-		logger.Debugln("generating pdf")
-
 		//#endregion unmarshal
+
+		logger.Debugln("generating pdf")
 
 		pdf, err := Generate(&request)
 		if err != nil {
