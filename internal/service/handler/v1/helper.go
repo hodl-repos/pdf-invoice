@@ -1,67 +1,81 @@
 package v1
 
 import (
-	"fmt"
+	"strings"
 
 	"github.com/hodl-repos/pdf-invoice/internal/dto"
 )
 
 func prepareFooterString(data *dto.AddressDto) string {
 	//name is required
-	tmp := *data.Name
+	var sb strings.Builder
+	sb.WriteString(*data.Name)
 
 	if data.Street1 != nil {
-		tmp = tmp + fmt.Sprintf("\n%s", *data.Street1)
+		sb.WriteString("\n")
+		sb.WriteString(*data.Street1)
 	}
 
 	if data.Street2 != nil {
-		tmp = tmp + fmt.Sprintf("\n%s", *data.Street2)
+		sb.WriteString("\n")
+		sb.WriteString(*data.Street2)
 	}
 
 	if data.Zip != nil || data.City != nil {
+		sb.WriteString("\n")
 		if data.Zip == nil {
-			tmp = tmp + fmt.Sprintf("\n%s", *data.City)
+			sb.WriteString(*data.City)
 		} else if data.City == nil {
-			tmp = tmp + fmt.Sprintf("\n%s", *data.Zip)
+			sb.WriteString(*data.Zip)
 		} else {
-			tmp = tmp + fmt.Sprintf("\n%s %s", *data.Zip, *data.City)
+			sb.WriteString(*data.Zip)
+			sb.WriteString(" ")
+			sb.WriteString(*data.City)
 		}
 	}
 
 	if data.Country != nil {
-		tmp = tmp + fmt.Sprintf("\n%s", *data.Country)
+		sb.WriteString("\n")
+		sb.WriteString(*data.Country)
 	}
 
-	return tmp
+	return sb.String()
 }
 
 func prepareAddressString(data *dto.AddressDto) string {
 	//name is required
-	tmp := *data.Name
+	var sb strings.Builder
+	sb.WriteString(*data.Name)
 
 	if data.Street1 != nil {
-		tmp = tmp + fmt.Sprintf("\n%s", *data.Street1)
+		sb.WriteString("\n")
+		sb.WriteString(*data.Street1)
 	}
 
 	if data.Street2 != nil {
-		tmp = tmp + fmt.Sprintf("\n%s", *data.Street2)
+		sb.WriteString("\n")
+		sb.WriteString(*data.Street2)
 	}
 
 	if data.Zip != nil || data.City != nil {
+		sb.WriteString("\n")
 		if data.Zip == nil {
-			tmp = tmp + fmt.Sprintf("\n%s", *data.City)
+			sb.WriteString(*data.City)
 		} else if data.City == nil {
-			tmp = tmp + fmt.Sprintf("\n%s", *data.Zip)
+			sb.WriteString(*data.Zip)
 		} else {
-			tmp = tmp + fmt.Sprintf("\n%s %s", *data.Zip, *data.City)
+			sb.WriteString(*data.Zip)
+			sb.WriteString(" ")
+			sb.WriteString(*data.City)
 		}
 	}
 
 	if data.Country != nil {
-		tmp = tmp + fmt.Sprintf("\n%s", *data.Country)
+		sb.WriteString("\n")
+		sb.WriteString(*data.Country)
 	}
 
-	return tmp
+	return sb.String()
 }
 
 func ap(table *[][]string, header, content string) {
@@ -97,23 +111,32 @@ func prepareInformationCells(data *dto.InvoiceInformationDto) [][]string {
 
 func prepareBankText(data *dto.BankPaymentDto) string {
 	// name is required
-	tmp := *data.AccountHolder + "\n" + *data.BankName
+	var sb strings.Builder
+	sb.WriteString(*data.AccountHolder)
+	sb.WriteString("\n")
+	sb.WriteString(*data.BankName)
 
 	if data.IBAN != nil {
-		tmp = tmp + fmt.Sprintf("\nIBAN: %s", *data.IBAN)
+		sb.WriteString("\n")
+		sb.WriteString(*data.IBAN)
 	}
 
 	if data.BIC != nil {
-		tmp = tmp + fmt.Sprintf("\nBIC: %s", *data.BIC)
+		sb.WriteString("\n")
+		sb.WriteString(*data.BIC)
 	}
 
 	if data.PaymentReference != nil {
-		tmp = tmp + fmt.Sprintf("\nPayment-Reference: %s", *data.PaymentReference)
+		sb.WriteString("\n")
+		sb.WriteString("Payment-Reference: ")
+		sb.WriteString(*data.PaymentReference)
 	}
 
 	if data.RemittanceInformation != nil {
-		tmp = tmp + fmt.Sprintf("\nTransaction-Text: %s", *data.RemittanceInformation)
+		sb.WriteString("\n")
+		sb.WriteString("nTransaction-Text: ")
+		sb.WriteString(*data.RemittanceInformation)
 	}
 
-	return tmp
+	return sb.String()
 }
