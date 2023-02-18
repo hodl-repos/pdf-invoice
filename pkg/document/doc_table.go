@@ -443,8 +443,9 @@ func (t *DocTable) renderCell(i, j int) {
 	//check for page break
 
 	//style
-	if f := *t.cellStyleFuncs[i][j]; f != nil {
-		f(*t.doc.Fpdf)
+	if f := t.cellStyleFuncs[i][j]; f != nil {
+		tmpFunc := *f
+		tmpFunc(*t.doc.Fpdf)
 	}
 
 	//draw
@@ -649,6 +650,7 @@ func (t *DocTable) SetAllCellBorders(b bool) {
 func (t *DocTable) SetAllCellStyleFuncs(f *func(gofpdf.Fpdf)) {
 	t.cellStyleFuncs = matrix(t.tableRows, t.tableCols, f)
 }
+
 func (t *DocTable) SetCellStyleFuncsPerRow(fs []*func(gofpdf.Fpdf)) error {
 	if len(fs) != t.tableRows {
 		return fmt.Errorf("row count mismatch: got: %v should: %v", len(fs), t.tableRows)
@@ -662,6 +664,7 @@ func (t *DocTable) SetCellStyleFuncsPerRow(fs []*func(gofpdf.Fpdf)) error {
 
 	return nil
 }
+
 func (t *DocTable) SetCellStyleFuncsPerAlternateRows(f1, f2 *func(gofpdf.Fpdf)) {
 	// settings all rows with f1
 	fs := array(t.tableRows, f1)
@@ -676,6 +679,7 @@ func (t *DocTable) SetCellStyleFuncsPerAlternateRows(f1, f2 *func(gofpdf.Fpdf)) 
 		panic(err)
 	}
 }
+
 func (t *DocTable) SetCellStyleFuncsPerColumn(fs []*func(gofpdf.Fpdf)) error {
 	if len(fs) != t.tableCols {
 		return fmt.Errorf("column count mismatch: got: %v should: %v", len(fs), t.tableCols)
