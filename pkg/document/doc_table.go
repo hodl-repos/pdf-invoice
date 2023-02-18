@@ -442,6 +442,9 @@ func (t *DocTable) addColGap(i, j int) {
 func (t *DocTable) renderCell(i, j int) {
 	//check for page break
 
+	t.doc.SetFillColor(255, 255, 255)
+	oldColX, oldColY, oldColZ := t.doc.GetFillColor()
+
 	//style
 	if f := t.cellStyleFuncs[i][j]; f != nil {
 		tmpFunc := *f
@@ -456,7 +459,9 @@ func (t *DocTable) renderCell(i, j int) {
 
 	if t.cellBorders[i][j] {
 		// TODO: Add tableCell with border parameter
-		doc.Rect(x, y, t.colWidths[j], t.rowHeights[i], "D")
+		doc.Rect(x, y, t.colWidths[j], t.rowHeights[i], "FD")
+	} else {
+		doc.Rect(x, y, t.colWidths[j], t.rowHeights[i], "F")
 	}
 
 	alignStr := alignToFpdf(t.cellAligns[i][j])
@@ -482,9 +487,11 @@ func (t *DocTable) renderCell(i, j int) {
 			}
 		}
 		cellHt := t.rowHeights[i] - p[paddingTop] - p[paddingBottom]
+		doc.SetFillColor(oldColX, oldColY, oldColZ)
 		doc.CFormat(w, cellHt, cellStr, "", ln, alignStr, false, 0, "")
 		doc.SetXY(doc.GetX()+p[paddingRight], y)
 	case CellMulti:
+		doc.SetFillColor(oldColX, oldColY, oldColZ)
 		doc.MCell(w, t.getLineHeight(i, j), t.cells[i][j], "", alignStr, false)
 		doc.SetXY(x+w+p[paddingLeft]+p[paddingRight], y)
 	default:
@@ -658,7 +665,7 @@ func (t *DocTable) SetCellStyleFuncsPerRow(fs []*func(gofpdf.Fpdf)) error {
 
 	for i := 0; i < t.tableRows; i++ {
 		for j := 0; j < t.tableCols; j++ {
-			t.cellStyleFuncs[i][j] = fs[j]
+			t.cellStyleFuncs[i][j] = fs[i]
 		}
 	}
 

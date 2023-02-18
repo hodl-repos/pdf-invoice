@@ -6,12 +6,18 @@ import (
 	go2 "github.com/adam-hanna/arrayOperations"
 	"github.com/hodl-repos/pdf-invoice/internal/dto"
 	"github.com/hodl-repos/pdf-invoice/pkg/document"
+	"github.com/jung-kurt/gofpdf"
 )
 
 func generateInvoiceBlock(data *dto.InvoiceDto, pdf *document.Doc) error {
 	table, _ := document.NewDocTable(pdf, prepareInvoiceData(data))
 	table.SetAllCellPaddings(document.Padding{1, 1, 1, 1})
 	table.SetAllCellTypes(document.CellMulti)
+
+	bg := func(fpdf gofpdf.Fpdf) {
+		fpdf.SetFillColor(210, 210, 210)
+	}
+	table.SetCellStyleFuncsPerAlternateRows(&bg, nil)
 
 	table.Generate()
 
