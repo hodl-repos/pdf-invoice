@@ -1,6 +1,10 @@
 package document
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/jung-kurt/gofpdf"
+)
 
 // CollumnType determines how a column width will be calculated.
 type ColumnType int
@@ -161,8 +165,10 @@ type DocTable struct {
 	// |          paddingBottom            |
 	// #-----------------------------------#
 	cellPaddings [][]Padding
-	//cellBorders determine for every cell if a border should be displayed.
+	// cellBorders determine for every cell if a border should be displayed.
 	cellBorders [][]bool
+	// cellStyleFuncs determine the style for every cell.
+	cellStyleFuncs [][]*func(gofpdf.Fpdf)
 
 	// tableRows will be calculated by the number of rows of cells.
 	tableRows int
@@ -239,6 +245,9 @@ func (t *DocTable) SetDefaults() {
 	if len(t.cellBorders) == 0 {
 		t.cellBorders = matrix(rows, cols, true)
 	}
+	if len(t.cellStyleFuncs) == 0 {
+		t.cellStyleFuncs = matrix[*func(gofpdf.Fpdf)](rows, cols, nil)
+	}
 }
 
 func (t *DocTable) Generate() error {
@@ -256,6 +265,7 @@ func (t *DocTable) Generate() error {
 	if t.tableWidth > printWidth {
 		return fmt.Errorf("error generating table: table wider than print width: %v > %v", t.tableWidth, printWidth)
 	}
+	// TODO: add save current style function to doc and run it here.
 	for i := 0; i < t.tableRows; i++ {
 		t.addRowGap(i) //adds only gap between rows - page break is not affected by gap as there is already a gap
 
@@ -276,6 +286,7 @@ func (t *DocTable) Generate() error {
 			t.renderCell(i, j)
 		}
 	}
+	// TODO: add restore saved style function to doc and run it here.
 
 	return nil
 }
@@ -430,6 +441,11 @@ func (t *DocTable) addColGap(i, j int) {
 
 func (t *DocTable) renderCell(i, j int) {
 	//check for page break
+
+	//style
+	if f := *t.cellStyleFuncs[i][j]; f != nil {
+		f(*t.doc.Fpdf)
+	}
 
 	//draw
 	doc := t.doc
@@ -627,6 +643,51 @@ func (t *DocTable) SetAllCellLineHeightFactors(f float64) {
 
 func (t *DocTable) SetAllCellBorders(b bool) {
 	t.cellBorders = matrix(t.tableRows, t.tableCols, b)
+}
+
+// TODO: Add SetCellStyleFunc
+func (t *DocTable) SetAllCellStyleFuncs(f *func(gofpdf.Fpdf)) {
+	t.cellStyleFuncs = matrix(t.tableRows, t.tableCols, f)
+}
+func (t *DocTable) SetCellStyleFuncsPerRow(fs []*func(gofpdf.Fpdf)) error {
+	if len(fs) != t.tableRows {
+		return fmt.Errorf("row count mismatch: got: %v should: %v", len(fs), t.tableRows)
+	}
+
+	for i := 0; i < t.tableRows; i++ {
+		for j := 0; j < t.tableCols; j++ {
+			t.cellStyleFuncs[i][j] = fs[j]
+		}
+	}
+
+	return nil
+}
+func (t *DocTable) SetCellStyleFuncsPerAlternateRows(f1, f2 *func(gofpdf.Fpdf)) {
+	// settings all rows with f1
+	fs := array(t.tableRows, f1)
+
+	// change every other row to f2
+	for i := 1; i < t.tableRows; i += 2 {
+		fs[i] = f2
+	}
+
+	// sanity check ;D
+	if err := t.SetCellStyleFuncsPerRow(fs); err != nil {
+		panic(err)
+	}
+}
+func (t *DocTable) SetCellStyleFuncsPerColumn(fs []*func(gofpdf.Fpdf)) error {
+	if len(fs) != t.tableCols {
+		return fmt.Errorf("column count mismatch: got: %v should: %v", len(fs), t.tableCols)
+	}
+
+	for j := 0; j < t.tableCols; j++ {
+		for i := 0; i < t.tableRows; i++ {
+			t.cellStyleFuncs[i][j] = fs[j]
+		}
+	}
+
+	return nil
 }
 
 // HELPER ----------------------------------------------------------------------
