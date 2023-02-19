@@ -6,6 +6,15 @@ import (
 	"github.com/jung-kurt/gofpdf"
 )
 
+// HeadType
+type HeadType int
+
+const (
+	HeadUnset HeadType = iota
+	HeadNone
+	HeadFirstRow
+)
+
 // CollumnType determines how a column width will be calculated.
 type ColumnType int
 
@@ -75,6 +84,15 @@ const (
 //   - cellBorder: true
 type DocTable struct {
 	doc *Doc
+
+	// headType determines if the first row is used as head or not.
+	//
+	// HeadNone - All rows contain data.
+	//
+	// HeadFirstRow - First row is interpreted as head. When table is rendered
+	// over a page break, the head gets rerendered before continuing with
+	// rendering data rows.
+	headType HeadType
 
 	// colTypes determine how a column width will be calculated.
 	//
@@ -181,7 +199,7 @@ type DocTable struct {
 // NewDocTable creats a DocTable given a *Doc and cells. An error will be
 // returned when given cell dimensions are not valid (e.g. one row is shorter
 // than the others).
-func NewDocTable(doc *Doc, cells [][]string) (*DocTable, error) {
+func NewDocTable(doc *Doc, cells [][]string, args ...interface{}) (*DocTable, error) {
 	// checking if every row has the same length.
 	rowLen := len(cells[0])
 	for i, r := range cells {
@@ -202,6 +220,15 @@ func NewDocTable(doc *Doc, cells [][]string) (*DocTable, error) {
 	}
 	t.tableRows = len(cells)
 	t.tableCols = len(cells[0])
+
+	// set table parameters when given via args
+	for _, a := range args {
+		switch param := a.(type) {
+		case HeadType:
+			t.headType = param
+		}
+	}
+
 	t.SetDefaults()
 	return t, nil
 }
@@ -209,6 +236,10 @@ func NewDocTable(doc *Doc, cells [][]string) (*DocTable, error) {
 func (t *DocTable) SetDefaults() {
 	rows := t.tableRows
 	cols := t.tableCols
+	// table parameters
+	if t.headType == HeadUnset {
+		t.headType = HeadNone
+	}
 	// column parameters
 	if len(t.colTypes) == 0 {
 		t.colTypes = array(cols, ColDyn)
@@ -274,10 +305,11 @@ func (t *DocTable) Generate() error {
 		if nextRowHeight > t.doc.GetRemainingPrintHeight() {
 			t.doc.AddPage()
 
-			//print first row again
-			for j := 0; j < t.tableCols; j++ {
-				t.addColGap(0, j)
-				t.renderCell(0, j)
+			if t.headType == HeadFirstRow {
+				for j := 0; j < t.tableCols; j++ {
+					t.addColGap(0, j)
+					t.renderCell(0, j)
+				}
 			}
 		}
 
@@ -502,6 +534,13 @@ func (t *DocTable) renderCell(i, j int) {
 	}
 }
 
+// TABLE PARAMETER SETTERS
+func (t *DocTable) SetHeadType(ht HeadType) {
+	if ht != HeadUnset {
+		t.headType = ht
+	}
+}
+
 //  COL SETTERS ----------------------------------------------------------------
 
 func (t *DocTable) SetAllColTypes(ct ColumnType) {
@@ -657,7 +696,15 @@ func (t *DocTable) SetAllCellBorders(b bool) {
 func (t *DocTable) SetAllCellStyleFuncs(f *func(gofpdf.Fpdf)) {
 	t.cellStyleFuncs = matrix(t.tableRows, t.tableCols, f)
 }
+func (t *DocTable) SetCellStyleFuncsRow(i int, f *func(gofpdf.Fpdf)) error {
+	if err := t.checkRowIndex(i); err != nil {
+		return err
+	}
 
+	t.cellStyleFuncs[i] = array(t.tableCols, f)
+
+	return nil
+}
 func (t *DocTable) SetCellStyleFuncsPerRow(fs []*func(gofpdf.Fpdf)) error {
 	if len(fs) != t.tableRows {
 		return fmt.Errorf("row count mismatch: got: %v should: %v", len(fs), t.tableRows)
@@ -671,7 +718,6 @@ func (t *DocTable) SetCellStyleFuncsPerRow(fs []*func(gofpdf.Fpdf)) error {
 
 	return nil
 }
-
 func (t *DocTable) SetCellStyleFuncsPerAlternateRows(f1, f2 *func(gofpdf.Fpdf)) {
 	// settings all rows with f1
 	fs := array(t.tableRows, f1)
@@ -686,7 +732,6 @@ func (t *DocTable) SetCellStyleFuncsPerAlternateRows(f1, f2 *func(gofpdf.Fpdf)) 
 		panic(err)
 	}
 }
-
 func (t *DocTable) SetCellStyleFuncsPerColumn(fs []*func(gofpdf.Fpdf)) error {
 	if len(fs) != t.tableCols {
 		return fmt.Errorf("column count mismatch: got: %v should: %v", len(fs), t.tableCols)
@@ -703,12 +748,27 @@ func (t *DocTable) SetCellStyleFuncsPerColumn(fs []*func(gofpdf.Fpdf)) error {
 
 // HELPER ----------------------------------------------------------------------
 
-func (t *DocTable) checkIndices(i, j int) error {
+func (t *DocTable) checkRowIndex(i int) error {
 	if i < 0 || i >= t.tableRows {
 		return fmt.Errorf("invalid row index: got: %v should: 0-%v", i, t.tableRows-1)
 	}
+	return nil
+}
+
+func (t *DocTable) checkColIndex(j int) error {
 	if j < 0 || j >= t.tableCols {
 		return fmt.Errorf("invalid column index: got: %v should: 0-%v", j, t.tableCols-1)
+	}
+	return nil
+}
+
+func (t *DocTable) checkIndices(i, j int) error {
+	if err := t.checkRowIndex(i); err != nil {
+		return err
+	}
+	if err := t.checkColIndex(j); err != nil {
+
+		return err
 	}
 	return nil
 }

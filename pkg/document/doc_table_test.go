@@ -3,6 +3,7 @@ package document
 import (
 	"testing"
 
+	"github.com/jung-kurt/gofpdf"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -32,6 +33,29 @@ func TestDocTableCellsError(t *testing.T) {
 	}
 	_, err = NewDocTable(doc, cells)
 	assert.EqualError(t, err, "row 3 has mismatching columns: got: 3 should: 4")
+}
+
+func TestDocTableHead(t *testing.T) {
+	doc := NewA4()
+
+	cells := [][]string{
+		{"A", "B", "C", "D"},
+		{"E", "F", "G", "H"},
+		{"I", "J", "K", "L"},
+		{"M", "N", "O", "P"},
+		{"Q", "R", "S", "T"},
+		{"X", "Y", "Z", ""},
+	}
+
+	table, err := NewDocTable(doc, cells, HeadFirstRow)
+	assert.NoError(t, err)
+
+	doc.SetY(-30)
+
+	err = table.Generate()
+	assert.NoError(t, err)
+
+	CreatePDFInProjectRootOutFolder(doc.Fpdf, "DocTableHead.pdf")
 }
 
 func TestDocTableDynamicCols(t *testing.T) {
@@ -179,7 +203,7 @@ func TestDocTablePadding(t *testing.T) {
 	CreatePDFInProjectRootOutFolder(doc.Fpdf, "DocTablePadding.pdf")
 }
 
-func TestDocTableCelPaddingsPerColumn(t *testing.T) {
+func TestDocTableCellPaddingsPerColumn(t *testing.T) {
 	doc := NewA4()
 
 	cells := [][]string{
@@ -254,6 +278,37 @@ func TestDocTableCellAlignsPerColumn(t *testing.T) {
 	assert.NoError(t, err)
 
 	CreatePDFInProjectRootOutFolder(doc.Fpdf, "DocTableCellAlignsPerColumn.pdf")
+}
+
+func TestDocTableSetCellStyleFuncsPerAlternateRows(t *testing.T) {
+	doc := NewA4()
+	cells := [][]string{
+		{"A", "B", "C", "D"},
+		{"E", "F", "G", "H"},
+		{"I", "J", "K", "L"},
+		{"M", "N", "O", "P"},
+		{"Q", "R", "S", "T"},
+		{"X", "Y", "Z", ""},
+	}
+
+	table, err := NewDocTable(doc, cells)
+	assert.NoError(t, err)
+
+	f1 := func(pdf gofpdf.Fpdf) {
+		pdf.SetFillColor(255, 255, 255)
+		pdf.SetTextColor(0, 0, 0)
+	}
+	f2 := func(pdf gofpdf.Fpdf) {
+		pdf.SetFillColor(200, 200, 200)
+		pdf.SetTextColor(0, 0, 0)
+	}
+
+	table.SetCellStyleFuncsPerAlternateRows(&f1, &f2)
+
+	err = table.Generate()
+	assert.NoError(t, err)
+
+	CreatePDFInProjectRootOutFolder(doc.Fpdf, "DocTableSetCellStyleFuncsPerAlternateRows.pdf")
 }
 
 func TestDocTableSetColGaps(t *testing.T) {
