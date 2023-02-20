@@ -35,19 +35,19 @@ func (data *SellerInformationDto) Format(d delimitor.Delimitor) string {
 	if data.Website != nil {
 		sb.WriteString(d.String())
 		sb.WriteString("Website: ")
-		sb.WriteString(*data.Phone)
+		sb.WriteString(*data.Website)
 	}
 
 	if data.VAT != nil {
 		sb.WriteString(d.String())
 		sb.WriteString("UID: ")
-		sb.WriteString(*data.Phone)
+		sb.WriteString(*data.VAT)
 	}
 
 	if data.CorporateRegisterNumber != nil {
 		sb.WriteString(d.String())
 		sb.WriteString("Firmenbuch: ")
-		sb.WriteString(*data.Phone)
+		sb.WriteString(*data.CorporateRegisterNumber)
 	}
 
 	return sb.String()
