@@ -4,78 +4,15 @@ import (
 	"strings"
 
 	"github.com/hodl-repos/pdf-invoice/internal/dto"
+	"github.com/hodl-repos/pdf-invoice/pkg/delimitor"
 )
 
-func prepareFooterString(data *dto.AddressDto) string {
-	//name is required
-	var sb strings.Builder
-	sb.WriteString(*data.Name)
-
-	if data.Street1 != nil {
-		sb.WriteString("\n")
-		sb.WriteString(*data.Street1)
+func prepareFooterString(data *dto.DocumentDto) string {
+	if data.Style.FooterOverride != nil {
+		return *data.Style.FooterOverride
 	}
 
-	if data.Street2 != nil {
-		sb.WriteString("\n")
-		sb.WriteString(*data.Street2)
-	}
-
-	if data.Zip != nil || data.City != nil {
-		sb.WriteString("\n")
-		if data.Zip == nil {
-			sb.WriteString(*data.City)
-		} else if data.City == nil {
-			sb.WriteString(*data.Zip)
-		} else {
-			sb.WriteString(*data.Zip)
-			sb.WriteString(" ")
-			sb.WriteString(*data.City)
-		}
-	}
-
-	if data.Country != nil {
-		sb.WriteString("\n")
-		sb.WriteString(*data.Country)
-	}
-
-	return sb.String()
-}
-
-func prepareAddressString(data *dto.AddressDto) string {
-	//name is required
-	var sb strings.Builder
-	sb.WriteString(*data.Name)
-
-	if data.Street1 != nil {
-		sb.WriteString("\n")
-		sb.WriteString(*data.Street1)
-	}
-
-	if data.Street2 != nil {
-		sb.WriteString("\n")
-		sb.WriteString(*data.Street2)
-	}
-
-	if data.Zip != nil || data.City != nil {
-		sb.WriteString("\n")
-		if data.Zip == nil {
-			sb.WriteString(*data.City)
-		} else if data.City == nil {
-			sb.WriteString(*data.Zip)
-		} else {
-			sb.WriteString(*data.Zip)
-			sb.WriteString(" ")
-			sb.WriteString(*data.City)
-		}
-	}
-
-	if data.Country != nil {
-		sb.WriteString("\n")
-		sb.WriteString(*data.Country)
-	}
-
-	return sb.String()
+	return data.SellerInformation.Format(delimitor.Tab)
 }
 
 func ap(table *[][]string, header, content string) {

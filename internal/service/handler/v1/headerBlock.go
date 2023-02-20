@@ -5,6 +5,7 @@ import (
 
 	go2 "github.com/adam-hanna/arrayOperations"
 	"github.com/hodl-repos/pdf-invoice/internal/dto"
+	"github.com/hodl-repos/pdf-invoice/pkg/delimitor"
 	"github.com/hodl-repos/pdf-invoice/pkg/document"
 	"github.com/hodl-repos/pdf-invoice/pkg/standardisedError"
 )
@@ -49,7 +50,7 @@ func createDIN5008ABlock(data *dto.DocumentDto, pdf *document.Doc) {
 	pdf.SetXY(25, 27+17.57)
 
 	//TODO: limit to 27.3 max-height
-	pdf.MCell(80, pdf.GetFontLineHeight() /* 27.3 */, prepareAddressString(data.InvoiceAddress), "", "LT", false)
+	pdf.MCell(80, pdf.GetFontLineHeight() /* 27.3 */, data.InvoiceAddress.Format(delimitor.NewLine), "", "LT", false)
 
 	lOld, _, rOld, _ := pdf.GetMargins()
 
@@ -73,7 +74,7 @@ func createDIN5008BBlock(data *dto.DocumentDto, pdf *document.Doc) {
 	pdf.SetXY(25, 45+17.7)
 
 	//TODO: limit to 27.3 max-height
-	pdf.MCell(80, pdf.GetFontLineHeight() /* 27.3 */, prepareAddressString(data.InvoiceAddress), "", "LT", false)
+	pdf.MCell(80, pdf.GetFontLineHeight() /* 27.3 */, data.InvoiceAddress.Format(delimitor.NewLine), "", "LT", false)
 
 	lOld, _, rOld, _ := pdf.GetMargins()
 

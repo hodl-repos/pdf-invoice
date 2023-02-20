@@ -3,6 +3,8 @@ package dto
 type DocumentDto struct {
 	Style *DocumentStyleDto `json:"style" validate:"required"`
 
+	SellerInformation *SellerInformationDto `json:"sellerInformation" validate:"required"`
+
 	InvoiceAddress *AddressDto `json:"invoiceAddress" validate:"required"`
 
 	InvoiceInformation *InvoiceInformationDto `json:"invoiceInformation" validate:"required"`

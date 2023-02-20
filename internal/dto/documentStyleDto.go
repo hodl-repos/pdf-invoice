@@ -16,4 +16,6 @@ type DocumentStyleDto struct {
 
 	//only possible when submitting bank-payment-data in main document
 	ShowBankPaymentQrCode *bool `json:"showBankPaymentQrCode"`
+
+	FooterOverride *string `json:"footerOverride"`
 }

@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/hodl-repos/pdf-invoice/internal/dto"
+	"github.com/hodl-repos/pdf-invoice/pkg/delimitor"
 	"github.com/hodl-repos/pdf-invoice/pkg/document"
 	"github.com/jung-kurt/gofpdf"
 )
@@ -20,10 +21,11 @@ func Generate(data *dto.DocumentDto) (*document.Doc, error) {
 
 	//create pdf with custom defaults (DIN)
 	pdf := document.NewA4WithDefaults(&defaultsFunction)
+
 	pdf.AliasNbPages("{nb}")
 
 	//perpare footer
-	footerData := prepareFooterString(data.InvoiceAddress)
+	footerData := prepareFooterString(data)
 
 	footerLines := pdf.SplitText(footerData, pdf.GetPrintWidth())
 	totalFooterTextHeight := float64(len(footerLines)) * pdf.GetFontLineHeight()
@@ -52,11 +54,11 @@ func Generate(data *dto.DocumentDto) (*document.Doc, error) {
 
 		//always display page numbers
 		pdf.SetY(-(totalFooterTextHeight + 10 + 4.23 + pdf.GetFontLineHeight()))
-		pdf.MCell(pdf.GetPrintWidth(), pdf.GetFontLineHeight(), fmt.Sprintf("Page %d from {nb}", pdf.PageNo()), "1", "R", false)
+		pdf.MCell(pdf.GetPrintWidth(), pdf.GetFontLineHeight(), fmt.Sprintf("Page %d from {nb}", pdf.PageNo()), "", "R", false)
 
 		//always display footer
 		pdf.SetY(-(totalFooterTextHeight + 10))
-		pdf.MCell(pdf.GetPrintWidth(), pdf.GetFontLineHeight(), footerData, "1", "M", false)
+		pdf.MCell(pdf.GetPrintWidth(), pdf.GetFontLineHeight(), footerData, "", "M", false)
 	})
 
 	//generate invoice header block
@@ -70,7 +72,7 @@ func Generate(data *dto.DocumentDto) (*document.Doc, error) {
 		pdf.MCell(0, pdf.GetFontLineHeight(), "Vertragspartner", "", "", false)
 
 		pdf.SetFont("Arial", "", 10)
-		pdf.MCell(0, pdf.GetFontLineHeight(), prepareAddressString(data.CustomerAddress), "", "", false)
+		pdf.MCell(0, pdf.GetFontLineHeight(), data.CustomerAddress.Format(delimitor.NewLine), "", "", false)
 
 		pdf.Ln(pdf.GetFontLineHeight())
 	}
