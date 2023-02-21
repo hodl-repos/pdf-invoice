@@ -1,15 +1,14 @@
 package v1
 
 import (
-	"fmt"
-
 	"github.com/hodl-repos/pdf-invoice/internal/dto"
 	"github.com/hodl-repos/pdf-invoice/pkg/delimitor"
 	"github.com/hodl-repos/pdf-invoice/pkg/document"
+	"github.com/hodl-repos/pdf-invoice/pkg/localize"
 	"github.com/jung-kurt/gofpdf"
 )
 
-func Generate(data *dto.DocumentDto) (*document.Doc, error) {
+func Generate(data *dto.DocumentDto, localizeClient *localize.LocalizeClient) (*document.Doc, error) {
 	defaultsFunction := func(pdf *gofpdf.Fpdf) {
 		pdf.SetFont("Arial", "", 10)
 		pdf.SetLineWidth(0.2)
@@ -54,7 +53,8 @@ func Generate(data *dto.DocumentDto) (*document.Doc, error) {
 
 		//always display page numbers
 		pdf.SetY(-(totalFooterTextHeight + 10 + 4.23 + pdf.GetFontLineHeight()))
-		pdf.MCell(pdf.GetPrintWidth(), pdf.GetFontLineHeight(), fmt.Sprintf("Page %d from {nb}", pdf.PageNo()), "", "R", false)
+		pageNoString := localizeClient.TranslatePageNumberWithTotalCount(pdf.PageNo(), "{nb}")
+		pdf.MCell(pdf.GetPrintWidth(), pdf.GetFontLineHeight(), pageNoString, "", "R", false)
 
 		//always display footer
 		pdf.SetY(-(totalFooterTextHeight + 10))
@@ -62,14 +62,14 @@ func Generate(data *dto.DocumentDto) (*document.Doc, error) {
 	})
 
 	//generate invoice header block
-	if err := generateHeaderBlock(data, pdf); err != nil {
+	if err := generateHeaderBlock(data, pdf, localizeClient); err != nil {
 		return nil, err
 	}
 
 	//append customer-address if provided
 	if data.CustomerAddress != nil {
 		pdf.SetFont("Arial", "B", 12)
-		pdf.MCell(0, pdf.GetFontLineHeight(), "Vertragspartner", "", "", false)
+		pdf.MCell(0, pdf.GetFontLineHeight(), localizeClient.TranslateContractingParty(), "", "", false)
 
 		pdf.SetFont("Arial", "", 10)
 		pdf.MCell(0, pdf.GetFontLineHeight(), data.CustomerAddress.Format(delimitor.NewLine), "", "", false)
@@ -78,7 +78,7 @@ func Generate(data *dto.DocumentDto) (*document.Doc, error) {
 	}
 
 	//generate invoice-block
-	err := generateInvoiceBlock(data.InvoiceData, pdf)
+	err := generateInvoiceBlock(data.InvoiceData, pdf, localizeClient)
 	if err != nil {
 		return nil, err
 	}
@@ -95,7 +95,7 @@ func Generate(data *dto.DocumentDto) (*document.Doc, error) {
 
 	//generate bank-payment-block
 	if data.BankPaymentData != nil && data.Style.ShowBankPaymentQrCode != nil && *data.Style.ShowBankPaymentQrCode {
-		if err := generateBankBlock(data, pdf); err != nil {
+		if err := generateBankBlock(data, pdf, localizeClient); err != nil {
 			return nil, err
 		}
 	}

@@ -5,6 +5,7 @@ import (
 
 	"github.com/hodl-repos/pdf-invoice/internal/dto"
 	"github.com/hodl-repos/pdf-invoice/pkg/delimitor"
+	"github.com/hodl-repos/pdf-invoice/pkg/localize"
 )
 
 func prepareFooterString(data *dto.DocumentDto) string {
@@ -23,19 +24,19 @@ func ap(table *[][]string, header, content string) {
 }
 
 // prepared invoice-rows with 2 colums
-func prepareInformationCells(data *dto.InvoiceInformationDto) [][]string {
+func prepareInformationCells(data *dto.InvoiceInformationDto, localizeClient *localize.LocalizeClient) [][]string {
 	//name is required
 	tmp := make([][]string, 0)
 
 	if data.InvoiceNumber != nil {
-		ap(&tmp, "Invoice-Number", *data.InvoiceNumber)
-		ap(&tmp, "Invoice-Date", data.InvoiceDate.Format("2006-01-02"))
+		ap(&tmp, localizeClient.TranslateInvoiceNumber(), *data.InvoiceNumber)
+		ap(&tmp, localizeClient.TranslateDate(), data.InvoiceDate.Format("2006-01-02"))
 	} else if data.OfferNumber != nil {
-		ap(&tmp, "Offer-Number", *data.OfferNumber)
-		ap(&tmp, "Offer-Date", data.OfferDate.Format("2006-01-02"))
+		ap(&tmp, localizeClient.TranslateOfferNumber(), *data.OfferNumber)
+		ap(&tmp, localizeClient.TranslateDate(), data.OfferDate.Format("2006-01-02"))
 	}
 
-	ap(&tmp, "Due-Date", data.DueDate.Format("2006-01-02"))
+	ap(&tmp, localizeClient.TranslateDueDate(), data.DueDate.Format("2006-01-02"))
 
 	if data.AdditionalInformation != nil {
 		for _, additional := range *data.AdditionalInformation {
@@ -46,7 +47,7 @@ func prepareInformationCells(data *dto.InvoiceInformationDto) [][]string {
 	return tmp
 }
 
-func prepareBankText(data *dto.BankPaymentDto) string {
+func prepareBankText(data *dto.BankPaymentDto, localizeClient *localize.LocalizeClient) string {
 	// name is required
 	var sb strings.Builder
 	sb.WriteString(*data.AccountHolder)
@@ -65,13 +66,15 @@ func prepareBankText(data *dto.BankPaymentDto) string {
 
 	if data.PaymentReference != nil {
 		sb.WriteString("\n")
-		sb.WriteString("Payment-Reference: ")
+		sb.WriteString(localizeClient.TranslatePaymentReference())
+		sb.WriteString(": ")
 		sb.WriteString(*data.PaymentReference)
 	}
 
 	if data.RemittanceInformation != nil {
 		sb.WriteString("\n")
-		sb.WriteString("nTransaction-Text: ")
+		sb.WriteString(localizeClient.TranslateRemittanceInformation())
+		sb.WriteString(": ")
 		sb.WriteString(*data.RemittanceInformation)
 	}
 

@@ -5,7 +5,7 @@ type DocumentDto struct {
 
 	SellerInformation *SellerInformationDto `json:"sellerInformation" validate:"required"`
 
-	InvoiceAddress *AddressDto `json:"invoiceAddress" validate:"required"`
+	InvoiceAddress *InvoiceAddressDto `json:"invoiceAddress" validate:"required"`
 
 	InvoiceInformation *InvoiceInformationDto `json:"invoiceInformation" validate:"required"`
 

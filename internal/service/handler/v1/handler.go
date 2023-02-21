@@ -6,10 +6,11 @@ import (
 
 	"github.com/hodl-repos/pdf-invoice/internal/dto"
 	"github.com/hodl-repos/pdf-invoice/pkg/apihelper"
+	"github.com/hodl-repos/pdf-invoice/pkg/localize"
 	"github.com/hodl-repos/pdf-invoice/pkg/logging"
 )
 
-func Handler() apihelper.HandlerFuncWithError {
+func Handler(localizationProvider *localize.LocalizeService) apihelper.HandlerFuncWithError {
 	return func(w http.ResponseWriter, r *http.Request) error {
 		ctx := r.Context()
 		logger := logging.FromContext(ctx)
@@ -28,9 +29,13 @@ func Handler() apihelper.HandlerFuncWithError {
 
 		//#endregion unmarshal
 
+		//starting localization
+
+		localizationClient := localizationProvider.CreateClient(*request.Style.LanguageCode)
+
 		logger.Debugln("generating pdf")
 
-		pdf, err := Generate(&request)
+		pdf, err := Generate(&request, localizationClient)
 		if err != nil {
 			return err
 		}

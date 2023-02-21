@@ -15,6 +15,10 @@ type Server struct {
 }
 
 func NewServer(ctx context.Context, cfg *Config, env *serverenv.ServerEnv) (*Server, error) {
+	if env.Localize() == nil {
+		panic("no localize configured")
+	}
+
 	return &Server{
 		config: cfg,
 		env:    env,

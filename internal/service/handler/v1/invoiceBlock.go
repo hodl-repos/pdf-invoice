@@ -6,11 +6,12 @@ import (
 	go2 "github.com/adam-hanna/arrayOperations"
 	"github.com/hodl-repos/pdf-invoice/internal/dto"
 	"github.com/hodl-repos/pdf-invoice/pkg/document"
+	"github.com/hodl-repos/pdf-invoice/pkg/localize"
 	"github.com/jung-kurt/gofpdf"
 )
 
-func generateInvoiceBlock(data *dto.InvoiceDto, pdf *document.Doc) error {
-	table, _ := document.NewDocTable(pdf, prepareInvoiceData(data))
+func generateInvoiceBlock(data *dto.InvoiceDto, pdf *document.Doc, localizeClient *localize.LocalizeClient) error {
+	table, _ := document.NewDocTable(pdf, prepareInvoiceData(data, localizeClient))
 	table.SetAllCellPaddings(document.Padding{1, 1, 1, 1})
 	table.SetAllCellTypes(document.CellMulti)
 
@@ -24,14 +25,23 @@ func generateInvoiceBlock(data *dto.InvoiceDto, pdf *document.Doc) error {
 	return nil
 }
 
-func prepareInvoiceData(data *dto.InvoiceDto) [][]string {
+func prepareInvoiceData(data *dto.InvoiceDto, localizeClient *localize.LocalizeClient) [][]string {
 	tmp := make([][]string, 0)
 
 	showDiscountColumn := go2.Reduce(*data.Rows, func(b bool, ird dto.InvoiceRowDto) bool {
 		return ird.DiscountFixed != nil || ird.DiscountPercentage != nil
 	}, false)
 
-	headerRow := prepareInvoiceLine(data, showDiscountColumn, "Title", "Amount", "Net", "Tax", "Discount", "Gross")
+	headerRow := prepareInvoiceLine(
+		data,
+		showDiscountColumn,
+		localizeClient.TranslateName(),
+		localizeClient.TranslateAmount(),
+		localizeClient.TranslateNet(),
+		localizeClient.TranslateTax(),
+		localizeClient.TranslateDiscount(),
+		localizeClient.TranslateGross())
+
 	tmp = append(tmp, headerRow)
 
 	for _, row := range *data.Rows {

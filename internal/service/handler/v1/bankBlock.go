@@ -8,15 +8,16 @@ import (
 	"github.com/hodl-repos/pdf-invoice/internal/dto"
 	"github.com/hodl-repos/pdf-invoice/pkg/bank"
 	"github.com/hodl-repos/pdf-invoice/pkg/document"
+	"github.com/hodl-repos/pdf-invoice/pkg/localize"
 	"github.com/hodl-repos/pdf-invoice/pkg/qr"
 	"github.com/jung-kurt/gofpdf"
 )
 
 // as this function is called at first - checks for site-breaks are made
-func generateBankBlock(data *dto.DocumentDto, pdf *document.Doc) error {
+func generateBankBlock(data *dto.DocumentDto, pdf *document.Doc, localizeClient *localize.LocalizeClient) error {
 	//prepare data
 	bankDto := generateEpcFromDto(data)
-	bankText := prepareBankText(data.BankPaymentData)
+	bankText := prepareBankText(data.BankPaymentData, localizeClient)
 
 	qr, _ := qr.GenerateQrCode(bankDto.GenerateCode())
 

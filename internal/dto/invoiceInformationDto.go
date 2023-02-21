@@ -11,6 +11,8 @@ type InvoiceInformationDto struct {
 	InvoiceNumber *string    `json:"invoiceNumber" validate:"required_without=OfferNumber"`
 	InvoiceDate   *time.Time `json:"invoiceDate" validate:"required_with=InvoiceNumber"`
 
+	CustomerIdentifier *string `json:"customerIdentifier"`
+
 	AdditionalInformation *[]AdditionalInvoiceInformationDto `json:"additionalInformation"`
 }
 

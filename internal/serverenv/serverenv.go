@@ -4,12 +4,14 @@ package serverenv
 import (
 	"context"
 
+	"github.com/hodl-repos/pdf-invoice/pkg/localize"
 	"github.com/hodl-repos/pdf-invoice/pkg/logging"
 )
 
 // ServerEnv represents latent environment configuration for servers in this
 // application.
 type ServerEnv struct {
+	localizeService *localize.LocalizeService
 }
 
 // Option defines function type to modify a ServerEnv on creation.
@@ -24,6 +26,17 @@ func New(ctx context.Context, opts ...Option) *ServerEnv {
 	}
 
 	return env
+}
+
+func WithLocalization(service *localize.LocalizeService) Option {
+	return func(env *ServerEnv) *ServerEnv {
+		env.localizeService = service
+		return env
+	}
+}
+
+func (s *ServerEnv) Localize() *localize.LocalizeService {
+	return s.localizeService
 }
 
 // Close shuts down the server env, closing database connections, etc.

@@ -1,0 +1,59 @@
+[Amount]
+hash = "sha1-43dc8532f7e57be250d7397de3d14085d51516f0"
+other = "Anzahl"
+
+[ContractingParty]
+hash = "sha1-b7a5ad5f38cebc68d1e5ee1ad13378b2d73d1999"
+other = "Vertragspartner"
+
+[CustomerIdentifier]
+hash = "sha1-f0c8a9094f2cb821a86de796ab7049fd3553fdbc"
+other = "Kundennummer"
+
+[Date]
+hash = "sha1-eb9a4bc1c0c153e4e4b042a79113b815b7e3021d"
+other = "Datum"
+
+[Discount]
+hash = "sha1-b524936d7aa1316e00d3354c9a8664d00e4bce5a"
+other = "Rabatt"
+
+[DueDate]
+hash = "sha1-4c1aeebc433bcb8eb4b05434619ea3136b785ea8"
+other = "Fälligkeitsdatum"
+
+[Gross]
+hash = "sha1-9580a6176fdb5a2890827ee6c7306f0c4505ee0d"
+other = "Brutto"
+
+[InvoiceNumber]
+hash = "sha1-ecdb345fdebb27ce7f38a96450049b95ca762c95"
+other = "Rechnungsnummer"
+
+[Name]
+hash = "sha1-709a23220f2c3d64d1e1d6d18c4d5280f8d82fca"
+other = "Name"
+
+[Net]
+hash = "sha1-9bb81c2eccbed59ee8cbe296f1278f0ca1f364cc"
+other = "Netto"
+
+[OfferNumber]
+hash = "sha1-3f0cc00e042b4f6c33ae9f481d8613fa797734a5"
+other = "Angebotsnummer"
+
+[PageNumberWithTotalCount]
+hash = "sha1-0a50adc81e87d3924aafbbd7e3023f5c803d5165"
+other = "Seite {{.PageNumber}} von {{.PageCount}}"
+
+[PaymentReference]
+hash = "sha1-da8ca6b874290286d82ef480bc41801b1eb3a921"
+other = "Zahlungsreferenz"
+
+[RemittanceInformation]
+hash = "sha1-12cb0b8c270b0b6e381001fdb088974f514785a0"
+other = "Transaktionstext"
+
+[Tax]
+hash = "sha1-9be70f66f8dd4da98c04e092dd7dc12331ce3e09"
+other = "Steuer"

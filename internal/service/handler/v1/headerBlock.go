@@ -7,12 +7,13 @@ import (
 	"github.com/hodl-repos/pdf-invoice/internal/dto"
 	"github.com/hodl-repos/pdf-invoice/pkg/delimitor"
 	"github.com/hodl-repos/pdf-invoice/pkg/document"
+	"github.com/hodl-repos/pdf-invoice/pkg/localize"
 	"github.com/hodl-repos/pdf-invoice/pkg/standardisedError"
 )
 
 type headerBlockGeneratorsType struct {
 	Name     document.LayoutType
-	Function func(*dto.DocumentDto, *document.Doc)
+	Function func(*dto.DocumentDto, *document.Doc, *localize.LocalizeClient)
 }
 
 var (
@@ -29,7 +30,7 @@ var (
 )
 
 // as this function is called at first - no checks for site-breaks are made
-func generateHeaderBlock(data *dto.DocumentDto, pdf *document.Doc) error {
+func generateHeaderBlock(data *dto.DocumentDto, pdf *document.Doc, localizeClient *localize.LocalizeClient) error {
 	formatFc, ok := go2.FindOne(headerBlockGenerators, func(abgt headerBlockGeneratorsType) bool { return abgt.Name == *data.Style.Layout })
 
 	if !ok {
@@ -41,12 +42,12 @@ func generateHeaderBlock(data *dto.DocumentDto, pdf *document.Doc) error {
 		}
 	}
 
-	formatFc.Function(data, pdf)
+	formatFc.Function(data, pdf, localizeClient)
 
 	return nil
 }
 
-func createDIN5008ABlock(data *dto.DocumentDto, pdf *document.Doc) {
+func createDIN5008ABlock(data *dto.DocumentDto, pdf *document.Doc, localizeClient *localize.LocalizeClient) {
 	pdf.SetXY(25, 27+17.57)
 
 	//TODO: limit to 27.3 max-height
@@ -57,8 +58,8 @@ func createDIN5008ABlock(data *dto.DocumentDto, pdf *document.Doc) {
 	pdf.SetLeftMargin(125)
 	pdf.SetRightMargin(10)
 	pdf.SetXY(125, 32)
-	table, _ := document.NewDocTable(pdf, prepareInformationCells(data.InvoiceInformation))
-	table.SetAllCellPaddings(document.Padding{1, 1, 1, 1})
+	table, _ := document.NewDocTable(pdf, prepareInformationCells(data.InvoiceInformation, localizeClient))
+	table.SetAllCellPaddings(document.Padding{0, 0, 0, 1})
 	table.SetAllCellBorders(false)
 
 	table.Generate()
@@ -70,7 +71,7 @@ func createDIN5008ABlock(data *dto.DocumentDto, pdf *document.Doc) {
 	pdf.SetXY(25, 98.5)
 }
 
-func createDIN5008BBlock(data *dto.DocumentDto, pdf *document.Doc) {
+func createDIN5008BBlock(data *dto.DocumentDto, pdf *document.Doc, localizeClient *localize.LocalizeClient) {
 	pdf.SetXY(25, 45+17.7)
 
 	//TODO: limit to 27.3 max-height
@@ -81,8 +82,8 @@ func createDIN5008BBlock(data *dto.DocumentDto, pdf *document.Doc) {
 	pdf.SetLeftMargin(125)
 	pdf.SetRightMargin(10)
 	pdf.SetXY(125, 50)
-	table, _ := document.NewDocTable(pdf, prepareInformationCells(data.InvoiceInformation))
-	table.SetAllCellPaddings(document.Padding{1, 1, 1, 1})
+	table, _ := document.NewDocTable(pdf, prepareInformationCells(data.InvoiceInformation, localizeClient))
+	table.SetAllCellPaddings(document.Padding{0, 0, 0, 1})
 	table.SetAllCellBorders(false)
 
 	table.Generate()

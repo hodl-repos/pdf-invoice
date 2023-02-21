@@ -10,5 +10,5 @@ import (
 func (s *Server) v1Router(r chi.Router) {
 	r.Get("/ping", apihelper.HandlePing())
 
-	r.Post("/generate", errorhandling.WithError(v1.Handler()))
+	r.Post("/generate", errorhandling.WithError(v1.Handler(s.env.Localize())))
 }

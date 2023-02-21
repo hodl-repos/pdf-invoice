@@ -7,12 +7,17 @@ import (
 	"github.com/sethvargo/go-envconfig"
 
 	"github.com/hodl-repos/pdf-invoice/internal/serverenv"
+	"github.com/hodl-repos/pdf-invoice/pkg/localize"
 	"github.com/hodl-repos/pdf-invoice/pkg/logging"
 )
 
 // Setup runs common initialization code for all servers. See SetupWith.
 func Setup(ctx context.Context, config interface{}) (*serverenv.ServerEnv, error) {
 	return SetupWith(ctx, config, envconfig.OsLookuper())
+}
+
+type LocalizeConfigProvider interface {
+	LocalizeServiceConfig() *localize.Config
 }
 
 // SetupWith process the given configuration using envconfig. It is
@@ -29,6 +34,18 @@ func SetupWith(ctx context.Context, config interface{}, l envconfig.Lookuper) (*
 		return nil, fmt.Errorf("error loading environment variables: %w", err)
 	}
 	logger.Infow("provided", "config", config)
+
+	if provider, ok := config.(LocalizeConfigProvider); ok {
+		logger.Info("connecting localization")
+
+		serviceConfig := provider.LocalizeServiceConfig()
+		service := localize.NewLocalizeService(serviceConfig)
+
+		opt := serverenv.WithLocalization(service)
+		serverEnvOpts = append(serverEnvOpts, opt)
+
+		logger.Infow("localization", "config", serviceConfig)
+	}
 
 	return serverenv.New(ctx, serverEnvOpts...), nil
 }
