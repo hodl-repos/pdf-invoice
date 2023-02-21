@@ -1,7 +1,6 @@
 package localize
 
 import (
-	"context"
 	"fmt"
 	"strings"
 
@@ -9,13 +8,8 @@ import (
 	go2 "github.com/adam-hanna/arrayOperations"
 	"github.com/nicksnyder/go-i18n/v2/i18n"
 	"golang.org/x/text/language"
+	"golang.org/x/text/message"
 )
-
-// contextKey is a private string type to prevent collisions in the context map.
-type contextKey string
-
-// loggerKey points to the value in the context where the logger is stored
-const loggerKey = contextKey("localizer")
 
 type LocalizeService struct {
 	bundle *i18n.Bundle
@@ -25,6 +19,7 @@ type LocalizeService struct {
 type LocalizeClient struct {
 	service   *LocalizeService
 	localizer *i18n.Localizer
+	printer   *message.Printer
 }
 
 // NewLogger creates a new logger with the given configuration.
@@ -62,19 +57,7 @@ func NewLocalizeService(config *Config) *LocalizeService {
 	}
 }
 
-func ContextWithLocalizeService(ctx context.Context, service *LocalizeService) context.Context {
-	return context.WithValue(ctx, loggerKey, service)
-}
-
-func FromContext(ctx context.Context) *LocalizeService {
-	if logger, ok := ctx.Value(loggerKey).(*LocalizeService); ok {
-		return logger
-	}
-
-	panic("must register localizer before using")
-}
-
-func (service *LocalizeService) CreateLocalizer(preferedLangs ...string) *i18n.Localizer {
+func (service *LocalizeService) createLocalizer(preferedLangs ...string) *i18n.Localizer {
 	langs := make([]language.Tag, 0)
 
 	for _, lang := range preferedLangs {
@@ -99,11 +82,31 @@ func (service *LocalizeService) CreateLocalizer(preferedLangs ...string) *i18n.L
 	return i18n.NewLocalizer(service.bundle, resLangs...)
 }
 
-func (service *LocalizeService) CreateClient(preferedLangs ...string) *LocalizeClient {
-	localizer := service.CreateLocalizer(preferedLangs...)
+func (service *LocalizeService) CreateClient(locale string, preferedLangs ...string) *LocalizeClient {
+	localizer := service.createLocalizer(preferedLangs...)
+
+	bestLang := preferedLangs[0]
 
 	return &LocalizeClient{
 		service:   service,
 		localizer: localizer,
+		printer:   createPrinter(bestLang, locale),
 	}
+}
+
+func createPrinter(bestLang, locale string) *message.Printer {
+	lang := language.Make(bestLang + "-" + strings.ToUpper(locale))
+	return message.NewPrinter(lang)
+}
+
+func (client *LocalizeClient) FFloat32(data float32) string {
+	return client.printer.Sprintf("%.2f", data)
+}
+
+func (client *LocalizeClient) FFloat64(data float64) string {
+	return client.printer.Sprintf("%.2f", data)
+}
+
+func (client *LocalizeClient) FInt(data int) string {
+	return client.printer.Sprintf("%g", data)
 }

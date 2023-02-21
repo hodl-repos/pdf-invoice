@@ -45,11 +45,11 @@ func prepareInvoiceData(data *dto.InvoiceDto, localizeClient *localize.LocalizeC
 	tmp = append(tmp, headerRow)
 
 	for _, row := range *data.Rows {
-		amountString := formatAmount(row.Amount, row.AmountUnit)
-		netString := formatMoney(row.Net)
-		taxString := formatMoney(row.Tax)
-		grossString := formatMoney(row.Gross)
-		discountString := formatDiscount(row.TaxPercentage, row.Tax)
+		amountString := formatAmount(row.Amount, row.AmountUnit, localizeClient)
+		netString := formatMoney(row.Net, localizeClient)
+		taxString := formatMoney(row.Tax, localizeClient)
+		grossString := formatMoney(row.Gross, localizeClient)
+		discountString := formatDiscount(row.TaxPercentage, row.Tax, localizeClient)
 
 		titleString := *row.Name
 		if row.Description != nil {
@@ -63,29 +63,29 @@ func prepareInvoiceData(data *dto.InvoiceDto, localizeClient *localize.LocalizeC
 	return tmp
 }
 
-func formatAmount(value *float64, unit *string) string {
+func formatAmount(value *float64, unit *string, localizeClient *localize.LocalizeClient) string {
 	if value == nil || unit == nil {
 		return "1"
 	}
 
-	return fmt.Sprintf("%.2f %s", *value, *unit)
+	return fmt.Sprintf("%v %s", localizeClient.FFloat64(*value), *unit)
 }
 
-func formatMoney(value *float64) string {
+func formatMoney(value *float64, localizeClient *localize.LocalizeClient) string {
 	if value == nil {
 		return "-"
 	}
 
-	return fmt.Sprintf("%.2f EUR", *value)
+	return fmt.Sprintf("%v EUR", localizeClient.FFloat64(*value))
 }
 
-func formatDiscount(percentage, fixed *float64) string {
+func formatDiscount(percentage, fixed *float64, localizeClient *localize.LocalizeClient) string {
 	if fixed != nil {
-		return formatMoney(fixed)
+		return formatMoney(fixed, localizeClient)
 	}
 
 	if percentage != nil {
-		return fmt.Sprintf("%.2f%", *percentage)
+		return fmt.Sprintf("%v%", localizeClient.FFloat64(*percentage))
 	}
 
 	return "-"

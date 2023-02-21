@@ -7,7 +7,7 @@ req-sample-invoice:
 	@curl -X POST -H "Content-Type: application/json" -d @./internal/service/handler/v1/sample.json localhost:12003/v1/generate > out/SampleInvoice.pdf
 
 build:
-	@CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o=./bin/ ./cmd/...
+	@CGO_ENABLED=0 go build -ldflags="-s -w" -o=./bin/ ./cmd/...
 
 loadtest:
 	@k6 run ./k6/test.js --vus 50 --duration 30s

@@ -31,7 +31,7 @@ func Handler(localizationProvider *localize.LocalizeService) apihelper.HandlerFu
 
 		//starting localization
 
-		localizationClient := localizationProvider.CreateClient(*request.Style.LanguageCode)
+		localizationClient := localizationProvider.CreateClient(*request.Style.LocaleCode, *request.Style.LanguageCode)
 
 		logger.Debugln("generating pdf")
 
