@@ -1,37 +1,298 @@
 {
-  "id": "R190000247",
-  "created": "2019-09-17",
-  "due_date": "2019-09-27",
-  "period": "08/2019 - 08/2019",
-  "sum": 33700,
-  "sum_with_tax": 40404,
-  "payment_type": "SEPA-Lastschrift",
-  "customer": {
-    "id": "",
-    "name": "DDr. Adam Gruselglatz",
-    "street1": "Gruselgasse 15",
-    "zip": 1010,
-    "city": "Wien",
-    "country": "Österreich",
-    "uid": "",
-    "bic": "GIBAATWWXXX",
-    "iban": "AT32XXXXXXXXXXXX1234",
-    "mandate": "123456"
+  "style": {
+    "localeCode": "de",
+    "languageCode": "de",
+    "layout": "DIN_5008A",
+    "showMarkerPuncher": true,
+    "showMarkerFolding": true,
+    "showBankPaymentQrCode": true,
+    "footerOverride": null
   },
-  "items": [
-    {
-      "name": "Super App",
-      "price": 3700,
-      "tax_rate": 20,
-      "tax": 740,
-      "price_with_tax": 4440
+  "sellerInformation": {
+    "address": {
+      "name": "Maurachäer.Eu",
+      "street1": "Straße 2",
+      "street2": "Top12",
+      "zip": "1131",
+      "city": "Wien",
+      "country": "AT"
     },
-    {
-      "name": "Service",
-      "price": 30000,
-      "tax_rate": 20,
-      "tax": 6000,
-      "price_with_tax": 36000
-    }
-  ]
+    "email": "simon@mauracher.cc",
+    "phone": "0676/9405999",
+    "website": "https://www.mauracher.cc",
+    "vat": "ATU12345678",
+    "corporateRegisterNumber": "FN512686a"
+  },
+  "invoiceAddress": {
+    "name": "Kunde Mauracher",
+    "street1": "Straße 1",
+    "street2": "Top11",
+    "zip": "1130",
+    "city": "Wien",
+    "country": "Austria"
+  },
+  "invoiceInformation": {
+    "invoiceNumber": "12-30392",
+    "invoiceDate": "2022-12-23T15:04:05Z",
+    "dueDate": "2022-12-28T15:04:05Z"
+  },
+  "customerAddress": {
+    "name": "vertragspartner Mauracher",
+    "street1": "Straße 2",
+    "street2": "Top12",
+    "zip": "1131",
+    "city": "Wiefn",
+    "country": "ÖSTERREICH"
+  },
+  "invoiceData": {
+    "showNetColumn": true,
+    "showGrossColumn": true,
+    "showTaxColumn": true,
+    "showAmountColumn": true,
+    "showNetSum": true,
+    "showTaxSum": true,
+    "showGrossSum": true,
+    "sumDiscountPercentage": 10.0,
+    "sumDiscountFixed": 21.99,
+    "rows": [
+      {
+        "name": "ANzug",
+        "description": "3-tlg",
+        "amount": 1,
+        "amountUnit": "stk",
+        "net": 666.66,
+        "tax": 12.0,
+        "gross": 888.99,
+        "discountPercentage": 10.0,
+        "discountFixed": 15.3
+      },
+      {
+        "name": "ANzug",
+        "description": "3-tlg",
+        "amount": 1,
+        "amountUnit": "stk",
+        "net": 666.66,
+        "tax": 12.0,
+        "gross": 888.99,
+        "discountPercentage": 10.0,
+        "discountFixed": 15.3
+      },
+      {
+        "name": "ANzug",
+        "description": "3-tlg",
+        "amount": 1,
+        "amountUnit": "stk",
+        "net": 666.66,
+        "tax": 12.0,
+        "gross": 888.99,
+        "discountPercentage": 10.0,
+        "discountFixed": 15.3
+      },
+      {
+        "name": "ANzug",
+        "description": "3-tlg",
+        "amount": 1,
+        "amountUnit": "stk",
+        "net": 666.66,
+        "tax": 12.0,
+        "gross": 888.99,
+        "discountPercentage": 10.0,
+        "discountFixed": 15.3
+      },
+      {
+        "name": "ANzug",
+        "description": "3-tlg",
+        "amount": 1,
+        "amountUnit": "stk",
+        "net": 666.66,
+        "tax": 12.0,
+        "gross": 888.99,
+        "discountPercentage": 10.0,
+        "discountFixed": 15.3
+      },
+      {
+        "name": "ANzug",
+        "description": "3-tlg",
+        "amount": 1,
+        "amountUnit": "stk",
+        "net": 666.66,
+        "tax": 12.0,
+        "gross": 888.99,
+        "discountPercentage": 10.0,
+        "discountFixed": 15.3
+      },
+      {
+        "name": "ANzug",
+        "description": "3-tlg",
+        "amount": 1,
+        "amountUnit": "stk",
+        "net": 666.66,
+        "tax": 12.0,
+        "gross": 888.99,
+        "discountPercentage": 10.0,
+        "discountFixed": 15.3
+      },
+      {
+        "name": "ANzug",
+        "description": "3-tlg",
+        "amount": 1,
+        "amountUnit": "stk",
+        "net": 666.66,
+        "tax": 12.0,
+        "gross": 888.99,
+        "discountPercentage": 10.0,
+        "discountFixed": 15.3
+      },
+      {
+        "name": "ANzug",
+        "description": "3-tlg",
+        "amount": 1,
+        "amountUnit": "stk",
+        "net": 666.66,
+        "tax": 12.0,
+        "gross": 888.99,
+        "discountPercentage": 10.0,
+        "discountFixed": 15.3
+      },
+      {
+        "name": "ANzug",
+        "description": "3-tlg",
+        "amount": 1,
+        "amountUnit": "stk",
+        "net": 666.66,
+        "tax": 12.0,
+        "gross": 888.99,
+        "discountPercentage": 10.0,
+        "discountFixed": 15.3
+      },
+      {
+        "name": "ANzug",
+        "description": "3-tlg",
+        "amount": 1,
+        "amountUnit": "stk",
+        "net": 666.66,
+        "tax": 12.0,
+        "gross": 888.99,
+        "discountPercentage": 10.0,
+        "discountFixed": 15.3
+      },
+      {
+        "name": "ANzug",
+        "description": "3-tlg",
+        "amount": 1,
+        "amountUnit": "stk",
+        "net": 666.66,
+        "tax": 12.0,
+        "gross": 888.99,
+        "discountPercentage": 10.0,
+        "discountFixed": 15.3
+      },
+      {
+        "name": "ANzug",
+        "description": "3-tlg",
+        "amount": 1,
+        "amountUnit": "stk",
+        "net": 666.66,
+        "tax": 12.0,
+        "gross": 888.99,
+        "discountPercentage": 10.0,
+        "discountFixed": 15.3
+      },
+      {
+        "name": "ANzug",
+        "description": "3-tlg",
+        "amount": 1,
+        "amountUnit": "stk",
+        "net": 666.66,
+        "tax": 12.0,
+        "gross": 888.99,
+        "discountPercentage": 10.0,
+        "discountFixed": 15.3
+      },
+      {
+        "name": "ANzug",
+        "description": "3-tlg",
+        "amount": 1,
+        "amountUnit": "stk",
+        "net": 666.66,
+        "tax": 12.0,
+        "gross": 888.99,
+        "discountPercentage": 10.0,
+        "discountFixed": 15.3
+      },
+      {
+        "name": "ANzug",
+        "description": "3-tlg",
+        "amount": 1,
+        "amountUnit": "stk",
+        "net": 666.66,
+        "tax": 12.0,
+        "gross": 888.99,
+        "discountPercentage": 10.0,
+        "discountFixed": 15.3
+      },
+      {
+        "name": "ANzug",
+        "description": "3-tlg",
+        "amount": 1,
+        "amountUnit": "stk",
+        "net": 666.66,
+        "tax": 12.0,
+        "gross": 888.99,
+        "discountPercentage": 10.0,
+        "discountFixed": 15.3
+      },
+      {
+        "name": "ANzug",
+        "description": "3-tlg",
+        "amount": 1,
+        "amountUnit": "stk",
+        "net": 666.66,
+        "tax": 12.0,
+        "gross": 888.99,
+        "discountPercentage": 10.0,
+        "discountFixed": 15.3
+      },
+      {
+        "name": "ANzug",
+        "description": "3-tlg",
+        "amount": 1,
+        "amountUnit": "stk",
+        "net": 666.66,
+        "tax": 12.0,
+        "gross": 888.99,
+        "discountPercentage": 10.0,
+        "discountFixed": 15.3
+      },
+      {
+        "name": "ANzug",
+        "description": "3-tlg",
+        "amount": 1,
+        "amountUnit": "stk",
+        "net": 666.66,
+        "tax": 12.0,
+        "gross": 888.99,
+        "discountPercentage": 10.0,
+        "discountFixed": 15.3
+      },
+      {
+        "name": "ANzug",
+        "description": "3-tlg",
+        "amount": 1,
+        "amountUnit": "stk",
+        "net": 666.66,
+        "tax": 12.0,
+        "gross": 888.99,
+        "discountPercentage": 10.0,
+        "discountFixed": 15.3
+      }
+    ]
+  },
+  "invoiceDataSuffix": "thx for shopping",
+  "bankPaymentData": {
+    "accountHolder": "Rotnkopf OG",
+    "bankName": "VOLKSBANK",
+    "iban": "AT123456789023",
+    "bic": "RZTIAT3364"
+  }
 }
