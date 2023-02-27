@@ -2,6 +2,7 @@
 
 see [wiki](https://github.com/hodl-repos/pdf-invoice/wiki) for creating requests and more
 
+swagger: [https://hodl-repos.github.io/pdf-invoice/](https://hodl-repos.github.io/pdf-invoice/)
 
 ### for dev in this repos
 
