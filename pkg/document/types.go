@@ -212,3 +212,91 @@ const (
 	paddingBottom
 	paddingLeft
 )
+
+// FontStyle determines the font style of a given font.
+//
+// Possible values:
+//   - FontStyleUnset
+//   - FontStyleRegular
+//   - FontStyleItalic
+//   - FontStyleBold
+//   - FontStyleUnderscore
+//   - FontStyleStrikeOut
+type FontStyleType int
+
+const (
+	FontStyleUnset FontStyleType = iota
+	FontStyleRegular
+	FontStyleItalic
+	FontStyleBold
+	FontStyleUnderscore
+	FontStyleStrikeOut
+)
+
+// LineCapType determines the line cap stype of a line.
+//
+// LineCapButt - line ends as a square at the end of the line.
+//
+// LineCapRound - line ends as a circle at the end of the line. The center of
+// the circle is at the end of the line.
+//
+// LineCapSquare - line ends as a square at the end of the line. the center of
+// the square is at the end of the line.
+type LineCapType int
+
+const (
+	LineCapUnset LineCapType = iota
+	LineCapButt
+	LineCapRound
+	LineCapSquare
+)
+
+// lineCapType2Fpdf converts LineCapType to Fpdf type following the convention
+// seen in SetLineJoinStyle().
+//
+// The default value is "butt".
+func lineCapType2Fpdf(t LineCapType) string {
+	switch t {
+	case LineCapRound:
+		return "round"
+	case LineCapSquare:
+		return "square"
+	default:
+		return "butt"
+	}
+}
+
+// LineJoinType determines the line join style of a line.
+//
+// LineJoinMiter - connects two line segments with a straight line, extending
+// their width to meet at a sharp point, or "miter".
+//
+// LineJoinRound - rounds off the corner where two lines meet, creating a
+// circular arc with a radius equal to the line width.
+//
+// LineJoinBevel - connects two line segments with a straight line, but
+// instead of extending the width to meet at a sharp point, it cuts off the
+// corner at an angle.
+type LineJoinType int
+
+const (
+	LineJoinUnset LineJoinType = iota
+	LineJoinMiter
+	LineJoinRound
+	LineJoinBevel
+)
+
+// lineJoinType2Fpdf converts LineJoinType to Fpdf type following the convention
+// seen in SetLineJoinStyle().
+//
+// The default value is "miter".
+func lineJoinType2Fpdf(t LineJoinType) string {
+	switch t {
+	case LineJoinRound:
+		return "round"
+	case LineJoinBevel:
+		return "bevel"
+	default:
+		return "miter"
+	}
+}
