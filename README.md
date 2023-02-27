@@ -1,5 +1,10 @@
 # pdf-invoice
 
+see [wiki](https://github.com/hodl-repos/pdf-invoice/wiki) for creating requests and more
+
+
+### for dev in this repos
+
 translate new string:
 add message&func in pkt/localize/messages
 
