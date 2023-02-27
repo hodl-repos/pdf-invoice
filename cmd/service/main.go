@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"os"
 	"os/signal"
 	"syscall"
 
@@ -16,10 +17,11 @@ import (
 func main() {
 	ctx, done := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 
-	err := environment.ImportFromFile(".env")
-	if err != nil {
-		fmt.Println("environment error", err)
-		panic(err)
+	if _, err := os.Stat(".env"); err == nil {
+		err := environment.ImportFromFile(".env")
+		if err != nil {
+			fmt.Println("environment error", err)
+		}
 	}
 
 	logger := logging.NewLoggerFromEnv()
@@ -33,7 +35,7 @@ func main() {
 		}
 	}()
 
-	err = realMain(ctx)
+	err := realMain(ctx)
 	done()
 
 	if err != nil {

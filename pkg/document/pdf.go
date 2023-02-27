@@ -10,6 +10,7 @@ import (
 )
 
 // TODO: add functionality to generate example files from tests.
+// ONLY FOR TEST
 func CreatePDFInProjectRootOutFolder(pdf *gofpdf.Fpdf, fileName string) error {
 	srcPath, err := getSrcPathToProjectRootOutFolder(fileName)
 	if err != nil {
@@ -39,6 +40,7 @@ func CreatePDFInProjectRootOutFolder(pdf *gofpdf.Fpdf, fileName string) error {
 	return nil
 }
 
+// ONLY FOR TEST
 func getSrcPathToProjectRootOutFolder(fileName string) (string, error) {
 	// Get the current working directory
 	currentDir, err := os.Getwd()

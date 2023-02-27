@@ -2,65 +2,69 @@ package document
 
 import (
 	"bytes"
-	"encoding/base64"
-	"fmt"
-	"image"
-	"io"
-	"os"
+	"errors"
+	"image/jpeg"
+	"image/png"
+	"io/ioutil"
+	"net/http"
 
 	"github.com/jung-kurt/gofpdf"
 )
 
 type Image struct {
-	ImageName   string `json:"image_name"`             // ImageName of the image
-	ImagePath   string `json:"image_path,omitempty"`   // ImagePath is the location of the image on the filesystem
-	ImageString string `json:"image_string,omitempty"` // ImageString is the encoded string of the image
+	ImageUrl *string `json:"imageUrl" validate:"required"`
 }
 
-// FilePNGSize returns the width & height of a given png file from path.
-func FilePNGSize(path string) (float64, float64, error) {
-	file, err := os.Open(path)
-	if err != nil {
-		return -1, -1, err
-	}
-	defer file.Close()
+func (doc *Doc) AddImage(dto *Image) (*gofpdf.ImageInfoType, error) {
+	rawImg, err := getImageFromUrl(dto.ImageUrl)
 
-	img, _, err := image.Decode(file)
 	if err != nil {
-		return -1, -1, err
+		return nil, err
 	}
 
-	bounds := img.Bounds()
-	width := bounds.Max.X - bounds.Min.X
-	height := bounds.Max.Y - bounds.Min.Y
-	fmt.Printf("Width: %d, Height: %d\n", width, height)
-	return float64(width), float64(height), nil
+	//TEST IF PNG OR JPG
+	if _, err = png.Decode(bytes.NewReader(*rawImg)); err == nil {
+		return doc.Fpdf.RegisterImageOptionsReader(*dto.ImageUrl,
+			gofpdf.ImageOptions{ImageType: "PNG", ReadDpi: true},
+			bytes.NewReader(*rawImg)), nil
+	}
+
+	if _, err = jpeg.Decode(bytes.NewReader(*rawImg)); err == nil {
+		return doc.Fpdf.RegisterImageOptionsReader(*dto.ImageUrl,
+			gofpdf.ImageOptions{ImageType: "JPG", ReadDpi: true},
+			bytes.NewReader(*rawImg)), nil
+	}
+
+	return nil, errors.New("cannot load image - wrong format?")
 }
 
-func AddPNG(pdf *gofpdf.Fpdf, img *Image) (*gofpdf.ImageInfoType, error) {
-	if img.ImagePath == "" && img.ImageString == "" {
-		return nil, fmt.Errorf("error adding png: no image path or string")
+func getImageFromUrl(url *string) (*[]byte, error) {
+	// Create a new request using http
+	req, err := http.NewRequest("GET", *url, nil)
+
+	if err != nil {
+		return nil, err
 	}
 
-	var file io.Reader
+	// Send req using http Client
+	client := &http.Client{}
+	resp, err := client.Do(req)
 
-	if img.ImagePath != "" {
-		f, err := os.Open(img.ImagePath)
-		if err != nil {
-			return nil, fmt.Errorf("error opening image_path: %v", err)
-		}
-		defer f.Close()
-
-		file = f
+	if err != nil {
+		return nil, err
 	}
 
-	if img.ImageString != "" {
-		decodedBytes, err := base64.StdEncoding.DecodeString(img.ImageString)
-		if err != nil {
-			return nil, fmt.Errorf("error decoding image_string: %v", err)
-		}
-		file = bytes.NewReader(decodedBytes)
+	if resp.StatusCode != http.StatusOK {
+		return nil, errors.New("wront status @ get request: " + resp.Status)
 	}
 
-	return pdf.RegisterImageOptionsReader(img.ImageName, gofpdf.ImageOptions{ImageType: "png", ReadDpi: true}, file), nil
+	defer resp.Body.Close()
+
+	data, err := ioutil.ReadAll(resp.Body)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &data, nil
 }

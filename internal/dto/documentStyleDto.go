@@ -6,6 +6,8 @@ type DocumentStyleDto struct {
 	LocaleCode   *string `json:"localeCode" validate:"required"`
 	LanguageCode *string `json:"languageCode" validate:"required"`
 
+	Image *document.Image `json:"image"`
+
 	Layout *document.LayoutType `json:"layout" validate:"required"`
 
 	//only possible when A4-Portrait

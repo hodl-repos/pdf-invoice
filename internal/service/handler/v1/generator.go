@@ -82,6 +82,10 @@ func Generate(data *dto.DocumentDto, localizeClient *localize.LocalizeClient) (*
 	if err != nil {
 		return nil, err
 	}
+	err = generateInvoiceSumBlock(data.InvoiceData, pdf, localizeClient)
+	if err != nil {
+		return nil, err
+	}
 
 	pdf.Ln(pdf.GetFontLineHeight())
 

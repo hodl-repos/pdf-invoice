@@ -6,7 +6,7 @@ export default function () {
     style: {
       localeCode: "de",
       languageCode: "de",
-      layout: "DIN_5008A",
+      layout: "DIN_5008B",
       showMarkerPuncher: true,
       showMarkerFolding: true,
       showBankPaymentQrCode: true,

@@ -11,12 +11,30 @@ import (
 )
 
 func generateInvoiceBlock(data *dto.InvoiceDto, pdf *document.Doc, localizeClient *localize.LocalizeClient) error {
-	table, _ := document.NewDocTable(pdf, prepareInvoiceData(data, localizeClient))
+	rawData := prepareInvoiceData(data, localizeClient)
+
+	table, _ := document.NewDocTable(pdf, rawData)
+	table.SetAllCellBorders(false)
+	table.SetHeadType(document.HeadFirstRow)
 	table.SetAllCellPaddings(document.Padding{1, 1, 1, 1})
 	table.SetAllCellTypes(document.CellMulti)
 
+	//set every col type to calc, but not the first one
+	nrCols := len(rawData[0])
+	colTypes := make([]document.ColumnType, 0)
+	alTypes := make([]document.AlignmentType, 0)
+	colTypes = append(colTypes, document.ColDyn)
+	alTypes = append(alTypes, document.AlignLeft)
+	for i := 1; i < nrCols; i++ {
+		colTypes = append(colTypes, document.ColFixed)
+		alTypes = append(alTypes, document.AlignRight)
+	}
+	table.SetColTypes(colTypes)
+	table.SetCellAlingsPerColumn(alTypes)
+	table.SetAllColFixedWidths(25.0)
+
 	bg := func(fpdf gofpdf.Fpdf) {
-		fpdf.SetFillColor(210, 210, 210)
+		fpdf.SetFillColor(220, 220, 220)
 	}
 	table.SetCellStyleFuncsPerAlternateRows(&bg, nil)
 
