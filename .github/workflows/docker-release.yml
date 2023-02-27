@@ -19,7 +19,7 @@ jobs:
         with:
           # list of Docker images to use as base name for tags
           images: |
-            ghcr.io/simonmau/pdf-encrypt-webapi
+            ghcr.io/hodl-repos/pdf-invoice
           # generate Docker tags based on the following events/attributes
           tags: |
             type=schedule
