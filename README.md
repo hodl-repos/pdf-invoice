@@ -1,6 +1,6 @@
 # pdf-invoice
 
-see [wiki](https/github.com/hodl-repos/pdf-invoice/wiki)
+see [wiki](https://github.com/hodl-repos/pdf-invoice/wiki) for creating requests and more
 
 
 ### for dev in this repos
