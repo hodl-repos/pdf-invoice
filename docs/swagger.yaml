@@ -1,0 +1,274 @@
+openapi: 3.0.0
+info:
+  description: >-
+    this api documentation helps creating pdf-invoices using the
+    github.com/hodl-repos/pdf-invoice docker container
+  version: 1.0.0
+  title: PDF-Invoice API
+  contact:
+    url: https://github.com/hodl-repos/pdf-invoice
+  license:
+    name: MIT
+    url: https://github.com/hodl-repos/pdf-invoice/blob/main/LICENSE
+servers:
+  - url: https://api.example.com/v1
+paths:
+  /v1/generate:
+    post:
+      summary: generates a new pdf-invoice
+      description: >
+        By passing in the appropriate request-body, you can generate a new pdf
+        invoice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Document'
+      responses:
+        '200':
+          description: reponse pdf generated
+        '400':
+          description: bad input/validation failed
+
+components:
+  schemas:
+    Address:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          example: 'Customer #123'
+        street1:
+          type: string
+          example: Street Nr. 1
+        street2:
+          type: string
+          example: Go through door 1
+        zip:
+          type: string
+          example: '38304'
+        city:
+          type: string
+          example: Munich
+        country:
+          type: string
+          example: Germany
+    BankPayment:
+      type: object
+      required:
+        - accountHolder
+        - bankName
+        - iban
+      properties:
+        accountHolder:
+          type: string
+          example: Main Account from Company
+        bankName:
+          type: string
+          example: Goldman Sachs
+        iban:
+          type: string
+          example: DE1 3838 1384 3298 4883 43
+        bic:
+          type: string
+          example: RZTIAT12938
+        paymentReference:
+          type: string
+          example: Invoice 129438
+        remittanceInformation:
+          type: string
+          example: 'For use #12'
+    SellerInformation:
+      type: object
+      required:
+        - address
+      properties:
+        address:
+          $ref: '#/components/schemas/Address'
+        email:
+          type: string
+          example: mail@example.com
+        website:
+          type: string
+          example: example.com
+        vat:
+          type: string
+          example: DE13267890987
+        corporateRegisterNumber:
+          type: string
+          example: FN9384828b
+    Image:
+      type: object
+      required:
+        - imageUrl
+      properties:
+        imageUrl:
+          type: string
+          example: https://de.wikipedia.org/static/images/project-logos/dewiki-2x.png
+    DocumentStyle:
+      type: object
+      required:
+        - localeCode
+        - languageCode
+        - layout
+      properties:
+        localeCode:
+          type: string
+          example: de
+        languageCode:
+          type: string
+          example: de
+        image:
+          $ref: '#/components/schemas/Image'
+        layout:
+          type: string
+          enum:
+            - DIN_5008A
+            - DIN_5008B
+        showMarkerPuncher:
+          type: boolean
+        showMarkerFolding:
+          type: boolean
+        showBankPaymentQrCode:
+          type: boolean
+        footerOverride:
+          type: string
+    InvoiceAddress:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          example: 'Customer #123'
+        street1:
+          type: string
+          example: Street Nr. 1
+        street2:
+          type: string
+          example: Go through door 1
+        zip:
+          type: string
+          example: '38304'
+        city:
+          type: string
+          example: Munich
+        country:
+          type: string
+          example: Germany
+        vat:
+          type: string
+          example: DE7492904848
+    InvoiceAdditionalInformation:
+      type: object
+      required:
+        - title
+        - value
+      properties:
+        title:
+          type: string
+        value:
+          type: string
+    InvoiceInformation:
+      type: object
+      required:
+        - dueDate
+      properties:
+        offerNumber:
+          type: string
+        offerDate:
+          type: string
+          format: date
+        dueDate:
+          type: string
+          format: date
+        invoiceNumber:
+          type: string
+        invoiceDate:
+          type: string
+          format: date
+        customerIdentifier:
+          type: string
+        additionalInformation:
+          type: array
+          items:
+            $ref: '#/components/schemas/InvoiceAdditionalInformation'
+    InvoiceRow:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          example: Item nr. 1
+        description:
+          type: string
+        amount:
+          type: number
+        amountUnit:
+          type: string
+        net:
+          type: number
+        taxPercentage:
+          type: number
+        tax:
+          type: number
+        gross:
+          type: number
+        discountPercentage:
+          type: number
+        discountFixed:
+          type: number
+    Invoice:
+      type: object
+      properties:
+        showNetColumn:
+          type: boolean
+        showGrossColumn:
+          type: boolean
+        showTaxColumn:
+          type: boolean
+        showAmountColumn:
+          type: boolean
+        showNetSum:
+          type: boolean
+        showTaxSum:
+          type: boolean
+        showGrossSum:
+          type: boolean
+        sumDiscountPercentage:
+          type: number
+        sumDiscountFixed:
+          type: number
+        rows:
+          type: array
+          items:
+            $ref: '#/components/schemas/InvoiceRow'
+    Document:
+      type: object
+      required:
+        - style
+        - sellerInformation
+        - invoiceAddress
+        - invoiceInformation
+        - invoiceData
+      properties:
+        style:
+          $ref: '#/components/schemas/DocumentStyle'
+        sellerInformation:
+          $ref: '#/components/schemas/SellerInformation'
+        invoiceInformation:
+          $ref: '#/components/schemas/InvoiceInformation'
+        invoiceAddress:
+          $ref: '#/components/schemas/InvoiceAddress'
+        customerAddress:
+          $ref: '#/components/schemas/Address'
+        invoiceData:
+          $ref: '#/components/schemas/Invoice'
+        invoiceDataSuffix:
+          type: string
+          example: Thank you for shopping\nSee you next time!
+        bankPaymentData:
+          $ref: '#/components/schemas/BankPayment'
