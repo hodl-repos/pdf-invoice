@@ -1,0 +1,19 @@
+services:
+  service:
+    image: custom-test
+    ports:
+      - 12003:8080
+    environment:
+      - LOG_LEVEL=DEBUG
+
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - 9090:9090
+  
+  grafana:
+    image: grafana/grafana-oss
+    ports:
+      - 3000:3000

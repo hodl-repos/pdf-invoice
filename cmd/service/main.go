@@ -70,5 +70,5 @@ func realMain(ctx context.Context) error {
 
 	logger.Infow("server listening", "port", cfg.Port)
 
-	return srv.ServeHTTPWithHandler(ctx, server.Routes(ctx))
+	return srv.ServeHTTPWithObservabilityHandler(ctx, server.Routes(ctx))
 }

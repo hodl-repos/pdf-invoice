@@ -2,7 +2,9 @@ package service
 
 import (
 	"context"
+	"log"
 
+	"contrib.go.opencensus.io/exporter/prometheus"
 	"github.com/go-chi/chi"
 	"github.com/hodl-repos/pdf-invoice/internal/serverenv"
 	"github.com/hodl-repos/pdf-invoice/pkg/logging"
@@ -34,6 +36,12 @@ func (s *Server) Routes(ctx context.Context) *chi.Mux {
 
 	r.Use(middleware.ApplySharedCors())
 
+	exporter, err := prometheus.NewExporter(prometheus.Options{})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	r.Handle("/metrics", exporter)
 	r.Route("/v1", s.v1Router)
 
 	return r
