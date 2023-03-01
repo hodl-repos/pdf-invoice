@@ -11,7 +11,7 @@ info:
     name: MIT
     url: https://github.com/hodl-repos/pdf-invoice/blob/main/LICENSE
 servers:
-  - url: https://api.example.com/v1
+  - url: https://pdf-invoice.hodl-software.at/api
 paths:
   /v1/generate:
     post:
