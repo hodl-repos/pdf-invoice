@@ -8,7 +8,7 @@ import (
 
 func ApplySharedCors() func(next http.Handler) http.Handler {
 	return cors.Handler(cors.Options{
-		AllowedOrigins:   []string{"https://rotknopf.mauracher.cc", "http://localhost:4200"},
+		AllowedOrigins:   []string{"*"},
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token", "Location"},
 		ExposedHeaders:   []string{"Link", "Location"},
