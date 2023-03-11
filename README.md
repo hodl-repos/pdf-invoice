@@ -1,5 +1,7 @@
 # pdf-invoice
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/hodl-repos/pdf-invoice)](https://goreportcard.com/report/github.com/hodl-repos/pdf-invoice)
+
 see [wiki](https://github.com/hodl-repos/pdf-invoice/wiki) for creating requests and more
 
 swagger: [https://hodl-repos.github.io/pdf-invoice/](https://hodl-repos.github.io/pdf-invoice/)
